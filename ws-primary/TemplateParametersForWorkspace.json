@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "ws-primary"
+		},
+		"ws-primary-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:ws-primary.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"ls_rest_api_realtorCa_properties_typeProperties_url": {
+			"value": "https://realty-in-ca1.p.rapidapi.com/"
+		},
+		"ws-primary-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://dlsprimarystorage.dfs.core.windows.net"
+		}
+	}
+}
