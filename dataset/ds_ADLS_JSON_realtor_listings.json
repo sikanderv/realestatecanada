@@ -1,0 +1,141 @@
+{
+	"name": "ds_ADLS_JSON_realtor_listings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-primary-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
+				"folderPath": "raw/house",
+				"fileSystem": "realtor"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"listing_id": {
+					"type": "integer"
+				},
+				"mls_number": {
+					"type": "string"
+				},
+				"public_remarks": {
+					"type": "string"
+				},
+				"bathrooms": {
+					"type": "string"
+				},
+				"bedrooms": {
+					"type": "string"
+				},
+				"size_interior": {
+					"type": "string"
+				},
+				"floors": {
+					"type": "string"
+				},
+				"building_type": {
+					"type": "string"
+				},
+				"agent_id": {
+					"type": "integer"
+				},
+				"agent_name": {
+					"type": "string"
+				},
+				"org_id": {
+					"type": "integer"
+				},
+				"org_name": {
+					"type": "string"
+				},
+				"org_address": {
+					"type": "string"
+				},
+				"org_type": {
+					"type": "string"
+				},
+				"agent_position": {
+					"type": "string"
+				},
+				"listing_price": {
+					"type": "string"
+				},
+				"property_type": {
+					"type": "string"
+				},
+				"property_address": {
+					"type": "string"
+				},
+				"parking_name": {
+					"type": "string"
+				},
+				"parking_spaces_total": {
+					"type": "string"
+				},
+				"property_type_id": {
+					"type": "integer"
+				},
+				"property_ownership_type": {
+					"type": "string"
+				},
+				"amenities_nearby": {
+					"type": "string"
+				},
+				"converted_price": {
+					"type": "string"
+				},
+				"parking_type": {
+					"type": "string"
+				},
+				"price_unformatted": {
+					"type": "integer"
+				},
+				"land_size_total": {
+					"type": "string"
+				},
+				"land_size_frontage": {
+					"type": "string"
+				},
+				"postal_code": {
+					"type": "string"
+				},
+				"province_state": {
+					"type": "string"
+				},
+				"relative_rul": {
+					"type": "string"
+				},
+				"listing_status_id": {
+					"type": "integer"
+				},
+				"open_house_inserted_date_utc": {
+					"type": "string"
+				},
+				"listing_inserted_date_utc": {
+					"type": "integer"
+				},
+				"time_on_realtor": {
+					"type": "string"
+				},
+				"grouping_level": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

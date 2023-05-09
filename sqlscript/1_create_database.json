@@ -1,0 +1,20 @@
+{
+	"name": "1_create_database",
+	"properties": {
+		"folder": {
+			"name": "ldw"
+		},
+		"content": {
+			"query": "-- -- Create db\n-- CREATE DATABASE realtor\n-- GO\n\n--ALTER DATABASE realtor COLLATE Latin1_General_100_BIN2_UTF8\n-- GO\n\n-- -- -- Schema\n-- CREATE SCHEMA ldw\n-- GO\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

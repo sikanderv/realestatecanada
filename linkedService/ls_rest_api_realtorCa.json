@@ -1,0 +1,27 @@
+{
+	"name": "ls_rest_api_realtorCa",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://realty-in-ca1.p.rapidapi.com/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"X-RapidAPI-Key": {
+					"type": "SecureString",
+					"value": "**********"
+				},
+				"X-RapidAPI-Host": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

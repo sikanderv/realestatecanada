@@ -1,0 +1,524 @@
+{
+	"name": "pl_pg_01",
+	"properties": {
+		"description": "Get listings for houses, apartments,  rowhouses, etc., sequentially",
+		"activities": [
+			{
+				"name": "Get Residential Listings-House",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{concat('properties/list-residential?LatitudeMax=', '51.2124247', '&LatitudeMin=','50.8428219', '&LongitudeMax=', '-113.8598962', '&LongitudeMin=', '-114.3157738', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}"
+					},
+					{
+						"name": "Destination",
+						"value": "realtor/raw/house/listing.json"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['Id']"
+								},
+								"sink": {
+									"path": "listing_id"
+								}
+							},
+							{
+								"source": {
+									"path": "['MlsNumber']"
+								},
+								"sink": {
+									"path": "mls_number"
+								}
+							},
+							{
+								"source": {
+									"path": "['PublicRemarks']"
+								},
+								"sink": {
+									"path": "public_remarks"
+								}
+							},
+							{
+								"source": {
+									"path": "['Building']['BathroomTotal']"
+								},
+								"sink": {
+									"path": "bathrooms"
+								}
+							},
+							{
+								"source": {
+									"path": "['Building']['Bedrooms']"
+								},
+								"sink": {
+									"path": "bedrooms"
+								}
+							},
+							{
+								"source": {
+									"path": "['Building']['SizeInterior']"
+								},
+								"sink": {
+									"path": "size_interior"
+								}
+							},
+							{
+								"source": {
+									"path": "['Building']['StoriesTotal']"
+								},
+								"sink": {
+									"path": "floors"
+								}
+							},
+							{
+								"source": {
+									"path": "['Building']['Type']"
+								},
+								"sink": {
+									"path": "building_type"
+								}
+							},
+							{
+								"source": {
+									"path": "['Individual'][0]['IndividualID']"
+								},
+								"sink": {
+									"path": "agent_id"
+								}
+							},
+							{
+								"source": {
+									"path": "['Individual'][0]['Name']"
+								},
+								"sink": {
+									"path": "agent_name"
+								}
+							},
+							{
+								"source": {
+									"path": "['Individual'][0]['Organization']['OrganizationID']"
+								},
+								"sink": {
+									"path": "org_id"
+								}
+							},
+							{
+								"source": {
+									"path": "['Individual'][0]['Organization']['Name']"
+								},
+								"sink": {
+									"path": "org_name"
+								}
+							},
+							{
+								"source": {
+									"path": "['Individual'][0]['Organization']['Address']['AddressText']"
+								},
+								"sink": {
+									"path": "org_address"
+								}
+							},
+							{
+								"source": {
+									"path": "['Individual'][0]['Organization']['OrganizationType']"
+								},
+								"sink": {
+									"path": "org_type"
+								}
+							},
+							{
+								"source": {
+									"path": "['Individual'][0]['Position']"
+								},
+								"sink": {
+									"path": "agent_position"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['Price']"
+								},
+								"sink": {
+									"path": "listing_price"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['Type']"
+								},
+								"sink": {
+									"path": "property_type"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['Address']['AddressText']"
+								},
+								"sink": {
+									"path": "property_address"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['Parking'][0]['Name']"
+								},
+								"sink": {
+									"path": "parking_name"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['ParkingSpaceTotal']"
+								},
+								"sink": {
+									"path": "parking_spaces_total"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['TypeId']"
+								},
+								"sink": {
+									"path": "property_type_id"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['OwnershipType']"
+								},
+								"sink": {
+									"path": "property_ownership_type"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['AmmenitiesNearBy']"
+								},
+								"sink": {
+									"path": "amenities_nearby"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['ConvertedPrice']"
+								},
+								"sink": {
+									"path": "converted_price"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['ParkingType']"
+								},
+								"sink": {
+									"path": "parking_type"
+								}
+							},
+							{
+								"source": {
+									"path": "['Property']['PriceUnformattedValue']"
+								},
+								"sink": {
+									"path": "price_unformatted"
+								}
+							},
+							{
+								"source": {
+									"path": "['Land']['SizeTotal']"
+								},
+								"sink": {
+									"path": "land_size_total"
+								}
+							},
+							{
+								"source": {
+									"path": "['Land']['SizeFrontage']"
+								},
+								"sink": {
+									"path": "land_size_frontage"
+								}
+							},
+							{
+								"source": {
+									"path": "['PostalCode']"
+								},
+								"sink": {
+									"path": "postal_code"
+								}
+							},
+							{
+								"source": {
+									"path": "['ProvinceName']"
+								},
+								"sink": {
+									"path": "province_state"
+								}
+							},
+							{
+								"source": {
+									"path": "['RelativeDetailsURL']"
+								},
+								"sink": {
+									"path": "relative_rul"
+								}
+							},
+							{
+								"source": {
+									"path": "['StatusId']"
+								},
+								"sink": {
+									"path": "listing_status_id"
+								}
+							},
+							{
+								"source": {
+									"path": "['OpenHouseInsertDateUTC']"
+								},
+								"sink": {
+									"path": "open_house_inserted_date_utc"
+								}
+							},
+							{
+								"source": {
+									"path": "['InsertedDateUTC']"
+								},
+								"sink": {
+									"path": "listing_inserted_date_utc"
+								}
+							},
+							{
+								"source": {
+									"path": "['TimeOnRealtor']"
+								},
+								"sink": {
+									"path": "time_on_realtor"
+								}
+							},
+							{
+								"source": {
+									"path": "$['GroupingLevel']"
+								},
+								"sink": {
+									"path": "grouping_level"
+								}
+							}
+						],
+						"collectionReference": "$['Results']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_REST__listings",
+						"type": "DatasetReference",
+						"parameters": {
+							"latMax": "51.2124247",
+							"latMin": "50.8428219",
+							"lngMax": "-113.8598962",
+							"lngMin": "-114.3157738",
+							"currentPage": "1",
+							"recordsPerPage": "50",
+							"sortOrder": "A",
+							"sortBy": "6",
+							"transactionTypeId": "2",
+							"propertySearchTypeId": "1",
+							"propertyTypeGroupId": "1",
+							"buildingTypeId": "1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_ADLS_JSON_realtor_listings",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "listings_house.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Get Response Metadata",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "@{concat('properties/list-residential?LatitudeMax=', '51.2124247', '&LatitudeMin=','50.8428219', '&LongitudeMax=', '-113.8598962', '&LongitudeMin=', '-114.3157738', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}"
+					},
+					{
+						"name": "Destination",
+						"value": "realtor/raw/house/listing.json"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['ErrorCode']['Id']"
+								},
+								"sink": {
+									"path": "response_status_code"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ErrorCode']['Description']"
+								},
+								"sink": {
+									"path": "response_status_description"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ErrorCode']['Status']"
+								},
+								"sink": {
+									"path": "response_status"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Paging']['RecordsPerPage']"
+								},
+								"sink": {
+									"path": "records_per_page"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Paging']['CurrentPage']"
+								},
+								"sink": {
+									"path": "current_page"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Paging']['TotalRecords']"
+								},
+								"sink": {
+									"path": "total_records"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_REST__listings",
+						"type": "DatasetReference",
+						"parameters": {
+							"latMax": "51.2124247",
+							"latMin": "50.8428219",
+							"lngMax": "-113.8598962",
+							"lngMin": "-114.3157738",
+							"currentPage": {
+								"value": "@pipeline().parameters.p_current_page",
+								"type": "Expression"
+							},
+							"recordsPerPage": "50",
+							"sortOrder": "A",
+							"sortBy": "6",
+							"transactionTypeId": "2",
+							"propertySearchTypeId": "1",
+							"propertyTypeGroupId": "1",
+							"buildingTypeId": "1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_ADLS_JSON_realtor_listings",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": "listings_metadata.json"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"p_current_page": {
+				"type": "Int",
+				"defaultValue": 1
+			},
+			"p_num_listings": {
+				"type": "string",
+				"defaultValue": "50"
+			}
+		},
+		"variables": {
+			"v_num_listings": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "_older"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-09T01:13:48Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

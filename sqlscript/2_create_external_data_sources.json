@@ -1,0 +1,20 @@
+{
+	"name": "2_create_external_data_sources",
+	"properties": {
+		"folder": {
+			"name": "ldw"
+		},
+		"content": {
+			"query": "USE realtor;\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'realtor_main_folder')\n CREATE EXTERNAL DATA SOURCE realtor_main_folder\n WITH (\n     location = 'abfss://realtor@dlsprimarystorage.dfs.core.windows.net'\n );\n\n--drop EXTERNAL DATA SOURCE raw_listings;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "realtor",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"name": "2_create_view_listings",
+	"properties": {
+		"folder": {
+			"name": "discovery"
+		},
+		"content": {
+			"query": "USE realtor\nGO\n\n-- DROP VIEW IF EXISTS ldw.vListings\n-- GO\n\n-- CREATE VIEW ldw.vListings\n-- AS\nSELECT     \n   --  TOP 10 \n    --  fullResults.filename() as file_name\n    -- ,Id\n    -- ,MlsNumber\n    -- ,PublicRemarks\n    -- CAST(JSON_VALUE(listings, '$.Id') AS bigint) listing_id,\n    -- CAST(JSON_VALUE(listings, '$.MlsNumber') AS nvarchar(12)) mls_number\n    listing.Id listing_id,\n    listing.MlsNumber mls_number,\n    listing.PublicRemarks public_remarks,\n    listing.PostalCode postal_code,\n    listing.ProvinceName province_name,\n    listing.StatusId listing_status_id,\n    CAST((CAST(listing.InsertedDateUTC AS BIGINT) - 599266080000000000) / 10000000 / 24 / 60 / 60 AS datetime) listing_date_utc,\n    listing.TimeOnRealtor time_on_realtor,\n    listing.Bathrooms bathrooms,\n    listing.Bedrooms bedrooms,\n    listing.SizeInterior size_interior,\n    listing.Stories stories,\n    listing.BuildingType building_type,\n    listing.BuildingAmenities building_amenities,\n    listing.BuildingType building_type,\n    listing.HasOpenHouseUpdate has_open_house,\n    listing.RelativeDetailsURL relative_url,\n    listing.LandSizeTotal land_size_total,\n    listing.LandSizeFrontage land_size_frontage,\n    property.Price property_price,\n    property.Type property_type,\n    property.AddressText property_address,\n    property.ParkingSpaceTotal property_parking_total,\n    property.TypeId property_type_id,\n    property.OwnershipType property_ownership_type,\n    property.ConvertedPrice property_converted_price,\n    property.ParkingType propery_parking_type,\n    property.PriceUnformattedValue property_unformatted_price\n\nFROM\n    OPENROWSET(\n        BULK 'bronze/listings.json',\n        data_source = 'raw_listings',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b',\n        ROWTERMINATOR = '0x0b'\n    )\nWITH (\n    jsonContent nvarchar(MAX)\n) AS fullResults\nCROSS APPLY OPENJSON(jsonContent)\nWITH (\n     Results NVARCHAR(MAX) as json\n) AS results\nCROSS APPLY OPENJSON(Results)\nWITH\n(\n    Id INT,\n    MlsNumber VARCHAR(12),\n    PublicRemarks NVARCHAR(MAX),\n    Bathrooms TINYINT '$.Building.BathroomTotal',\n    Bedrooms VARCHAR(20) '$.Building.Bedrooms',\n    SizeInterior VARCHAR(20) '$.Building.SizeInterior',\n    Stories TINYINT '$.Building.StoriesTotal',\n    BuildingType VARCHAR(25) '$.Building.Type',\n    BuildingAmenities VARCHAR(250) '$.Building.Ammenities',    \n    Individual NVARCHAR(MAX) AS JSON,\n    Property NVARCHAR(MAX) AS JSON,\n    LandSizeTotal VARCHAR(50) '$.Land.SizeTotal',\n    LandSizeFrontage VARCHAR(50) '$.Land.SizeFrontage',\n    PostalCode NVARCHAR(6),\n    ProvinceName NVARCHAR(30),\n    StatusId VARCHAR(3),\n    InsertedDateUTC VARCHAR(25),\n    RelativeDetailsURL VARCHAR(100),\n    TimeOnRealtor VARCHAR(25),\n    HasOpenHouseUpdate VARCHAR(5)\n) AS [listing]\nCROSS APPLY OPENJSON(Property)\nWITH(\n    Price VARCHAR(20),\n    Type VARCHAR(20),\n    AddressText VARCHAR(150) '$.Address.AddressText',\n    ParkingSpaceTotal TINYINT,\n    TypeId SMALLINT,\n    OwnershipType VARCHAR(25),\n    ConvertedPrice VARCHAR(20),\n    ParkingType VARCHAR(25),\n    PriceUnformattedValue MONEY\n) AS [property]\n; ",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "realtor",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

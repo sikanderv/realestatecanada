@@ -1,0 +1,43 @@
+{
+	"name": "ds_JSON_listings_metadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ws-primary-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "response_metadata.json",
+				"folderPath": "raw/house",
+				"fileSystem": "realtor"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"response_status_code": {
+					"type": "integer"
+				},
+				"response_status_description": {
+					"type": "string"
+				},
+				"response_status": {
+					"type": "string"
+				},
+				"records_per_page": {
+					"type": "integer"
+				},
+				"current_page": {
+					"type": "integer"
+				},
+				"total_records": {
+					"type": "integer"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

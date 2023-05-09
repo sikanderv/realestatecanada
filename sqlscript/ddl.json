@@ -1,0 +1,17 @@
+{
+	"name": "ddl",
+	"properties": {
+		"content": {
+			"query": "-- -- Create db\n-- CREATE DATABASE db_name;\n\n-- -- External data source\n-- CREATE EXTERNAL DATA SOURCE [ExternalDataSource] WITH\n-- (\n-- \tLOCATION = 'https://<STORAGEACCOUNT>.blob.core.windows.net/<CONTAINER>'\n-- )\n\n-- -- Schema\n-- CREATE SCHEMA schema_name AUTHORIZATION dbo;\n\n-- -- Master key in db\n-- CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'my_password';\n\n-- -- Credential to allow AD authentication\n-- CREATE DATABASE SCOPED CREDENTIAL SynapseUserIdentity WITH IDENTITY = 'User Identity';\n\n\n-- ALTER DATABASE db_name COLLATE Latin1_General_100_BIN2_UTF8;\n\n-- CREATE EXTERNAL FILE FORMAT ParquetFormat WITH\n-- (\n-- \tFORMAT_TYPE = PARQUET\n-- )\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "realtor",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

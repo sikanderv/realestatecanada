@@ -1,0 +1,20 @@
+{
+	"name": "1_explore_listings_json",
+	"properties": {
+		"folder": {
+			"name": "discovery"
+		},
+		"content": {
+			"query": "-- -- Create db\n-- CREATE DATABASE realtor;\n\n--ALTER DATABASE realtor COLLATE Latin1_General_100_BIN2_UTF8;\n\n-- -- -- Schema\n-- CREATE SCHEMA ldw;\n\n\n-- CREATE EXTERNAL DATA SOURCE\n-- create external data source raw_listings\n-- with (\n--     location = 'abfss://realtor@dlsprimarystorage.dfs.core.windows.net'\n-- )\n\n-- -- check auto-assigned data types\n-- exec sp_describe_first_result_set N'\n-- SELECT TOP 10\n--     iD   \n-- FROM\n--     OPENROWSET(\n--         BULK ''bronze/listings_2.json'',\n--         data_source = ''raw_listings'',\n--         FORMAT = ''CSV'',\n--         FIELDQUOTE = ''0x0b'',\n--         FIELDTERMINATOR =''0x0b'',\n--         ROWTERMINATOR = ''0x0b''\n--     )\n-- WITH (\n--     jsonContent varchar(MAX)\n--     --JSON_VALUE(jsonContent, ''$.results[id]'') AS listing_id\n-- ) AS [listings]\n-- ';\n\n-- Use /** in BULK or DATA_SOURCE to recursively load\nSELECT     \n    TOP 10 \n    --  fullResults.filename() as file_name\n    -- ,Id\n    -- ,MlsNumber\n    -- ,PublicRemarks\n    -- CAST(JSON_VALUE(listings, '$.Id') AS bigint) listing_id,\n    -- CAST(JSON_VALUE(listings, '$.MlsNumber') AS nvarchar(12)) mls_number\n    listings.*\nFROM\n    OPENROWSET(\n        BULK 'bronze/listings_2.json',\n        data_source = 'raw_listings',\n        FORMAT = 'CSV',\n        FIELDQUOTE = '0x0b',\n        FIELDTERMINATOR ='0x0b',\n        ROWTERMINATOR = '0x0b'\n    )\nWITH (\n    jsonContent nvarchar(MAX)\n) AS fullResults\nCROSS APPLY OPENJSON(jsonContent)\nWITH (\n     Results NVARCHAR(MAX) as json\n) AS results\nCROSS APPLY OPENJSON(Results)\nWITH\n(\n    Id BIGINT,\n    MlsNumber NVARCHAR(12),\n    -- PublicRemarks NVARCHAR(MAX),\n    Building NVARCHAR(MAX) AS JSON,\n    Individual NVARCHAR(MAX) AS JSON,\n    Property NVARCHAR(MAX) AS JSON,\n    Land NVARCHAR(MAX) AS JSON,\n    PostalCode NVARCHAR(6),\n    ProvinceName NVARCHAR(30),\n    StatusId NVARCHAR(3),\n    InsertedDateUTC NVARCHAR(25),\n    TimeOnRealtor NVARCHAR(25)\n) AS listings\n;\n\n\n\n-- -- This is auto-generated code\n-- SELECT TOP 10\n--     Id.Id\n-- /* --> place the keys that you see in JSON documents in the WITH clause:\n--        , JSON_VALUE (jsonContent, '$.key1') AS header1\n--        , JSON_VALUE (jsonContent, '$.key2') AS header2\n-- */\n-- FROM\n--     OPENROWSET(\n--         BULK 'bronze/listings_2.json',\n--         data_source = 'raw_listings',\n--         FORMAT = 'CSV',\n--         FIELDQUOTE = '0x0b',\n--         FIELDTERMINATOR ='0x0b',\n--         ROWTERMINATOR = '0x0b'\n--     )\n-- WITH (\n--     jsonContent varchar(MAX)\n--     --JSON_VALUE(jsonContent, '$.results[id]') AS listing_id\n-- ) AS [listings]\n-- CROSS APPLY OPENJSON(jsonContent)\n-- WITH (\n--      Results NVARCHAR(MAX) AS JSON\n-- ) AS Results\n-- cross apply openjson(Results.Results)\n-- with\n-- (\n--     Id nvarchar(10),\n--     MlsNumber ,\n-- ) AS Id\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "realtor",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

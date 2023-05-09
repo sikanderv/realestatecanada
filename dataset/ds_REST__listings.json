@@ -1,0 +1,69 @@
+{
+	"name": "ds_REST__listings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_rest_api_realtorCa",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"latMax": {
+				"type": "String",
+				"defaultValue": "51.212425"
+			},
+			"latMin": {
+				"type": "String",
+				"defaultValue": "50.842822"
+			},
+			"lngMax": {
+				"type": "String",
+				"defaultValue": "-113.859896"
+			},
+			"lngMin": {
+				"type": "String",
+				"defaultValue": "-114.315774"
+			},
+			"currentPage": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"recordsPerPage": {
+				"type": "string",
+				"defaultValue": "50"
+			},
+			"sortOrder": {
+				"type": "String",
+				"defaultValue": "A"
+			},
+			"sortBy": {
+				"type": "String",
+				"defaultValue": "6"
+			},
+			"transactionTypeId": {
+				"type": "String",
+				"defaultValue": "2"
+			},
+			"propertySearchTypeId": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"propertyTypeGroupId": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"buildingTypeId": {
+				"type": "String",
+				"defaultValue": "1"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat('properties/list-residential?LatitudeMax=', dataset().latMax, '&LatitudeMin=',dataset().latMin, '&LongitudeMax=', dataset().lngMax, '&LongitudeMin=', dataset().lngMin, '&CurrentPage=', dataset().currentPage, '&RecordsPerPage=', dataset().recordsPerPage, '&SortOrder=', dataset().sortOrder, '&SortBy=', dataset().sortBy, 'TransactionTypeId=', dataset().transactionTypeId, '&PropertySearchTypeId=', dataset().propertySearchTypeId, '&PropertyTypeGroupId=', dataset().propertyTypeGroupId, '&BuildingTypeId=', dataset().buildingTypeId)",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

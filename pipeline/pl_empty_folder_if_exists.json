@@ -1,0 +1,120 @@
+{
+	"name": "pl_empty_folder_if_exists",
+	"properties": {
+		"activities": [
+			{
+				"name": "Check Current Day Folder Exists",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_FOLDER_PARQUET_exists_check",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Delete If Current Day Folder Exists",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Check Current Day Folder Exists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('Check Current Day Folder Exists').output.exists",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Delete Folder Contents",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_ADLS_PARQUET_realtor_listings",
+									"type": "DatasetReference"
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ws-primary-WorkspaceDefaultStorage",
+										"type": "LinkedServiceReference"
+									},
+									"path": "realtor/pipeline_logs/delete_activity_logs"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"v_current_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_number_of_pages": {
+				"type": "String",
+				"defaultValue": "3"
+			},
+			"v_initial_json": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"v_initial_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_final_json": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"v_intermediate_json": {
+				"type": "Array",
+				"defaultValue": []
+			}
+		},
+		"folder": {
+			"name": "pg"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-09T01:13:42Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
