@@ -1,0 +1,591 @@
+{
+	"name": "pl_main_parquet_20230510",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Listings Metadata-Web",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.2124247', '&LatitudeMin=','50.8428219', '&LongitudeMax=', '-113.8598962', '&LongitudeMin=', '-114.3157738', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "GET",
+					"headers": {
+						"X-RapidAPI-Key": "d5309c84ebmsh9778152a2a89736p1bad24jsn77dceff0b8aa",
+						"X-RapidAPI-Host": "realty-in-ca1.p.rapidapi.com"
+					},
+					"linkedServices": [
+						{
+							"referenceName": "ls_rest_api_realtorCa",
+							"type": "LinkedServiceReference"
+						}
+					]
+				}
+			},
+			{
+				"name": "Set NumberOfRecords",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Listings Metadata-Web",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_number_of_records",
+					"value": {
+						"value": "@replace(string(activity('Get Listings Metadata-Web').output.Paging.TotalRecords), ': ','')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set NumberofPages",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set NumberOfRecords",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_number_of_pages",
+					"value": {
+						"value": "@if(\n    equals(\n            mod(int(variables('v_number_of_records')), 50),\n        0),\n    string(div(int(variables('v_number_of_records')), 50)),\n    string(add(div(int(variables('v_number_of_records')),50), 1))\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "DoUntilZeroPagesRemain",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Clear Current Day Folder If Exists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(int(variables('v_current_page')), int(variables('v_number_of_pages')))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Residential Listings-House",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{concat('properties/list-residential?LatitudeMax=', '51.2124247', '&LatitudeMin=','50.8428219', '&LongitudeMax=', '-113.8598962', '&LongitudeMin=', '-114.3157738', '&CurrentPage=', variables('v_current_page'), '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}"
+								},
+								{
+									"name": "Destination",
+									"value": "realtor/@{concat('raw/', formatDateTime(utcNow(),'yyyy'), '/', formatDateTime(utcNow(),'MM'))}/concat(formatDateTime(utcNow(),'dd), '_house.json')"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['Id']"
+											},
+											"sink": {
+												"name": "ListingId",
+												"type": "Int32"
+											}
+										},
+										{
+											"source": {
+												"path": "['MlsNumber']"
+											},
+											"sink": {
+												"name": "MlsNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['PublicRemarks']"
+											},
+											"sink": {
+												"name": "PublicRemarks",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Building']['BathroomTotal']"
+											},
+											"sink": {
+												"name": "BathroomTotal",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Building']['Bedrooms']"
+											},
+											"sink": {
+												"name": "Bedrooms",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Building']['SizeInterior']"
+											},
+											"sink": {
+												"name": "SizeInterior",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Building']['StoriesTotal']"
+											},
+											"sink": {
+												"name": "StoriesTotal",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Building']['Type']"
+											},
+											"sink": {
+												"name": "BuildingType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['Price']"
+											},
+											"sink": {
+												"name": "Price",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['Type']"
+											},
+											"sink": {
+												"name": "PropertyType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['Address']['AddressText']"
+											},
+											"sink": {
+												"name": "AddressText",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['Address']['Longitude']"
+											},
+											"sink": {
+												"name": "Longitude",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['Address']['Latitude']"
+											},
+											"sink": {
+												"name": "Latitude",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['ParkingSpaceTotal']"
+											},
+											"sink": {
+												"name": "ParkingSpaceTotal",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['TypeId']"
+											},
+											"sink": {
+												"name": "TypeId",
+												"type": "Int16"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['OwnershipType']"
+											},
+											"sink": {
+												"name": "OwnershipType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['AmmenitiesNearBy']"
+											},
+											"sink": {
+												"name": "AmmenitiesNearBy",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['ConvertedPrice']"
+											},
+											"sink": {
+												"name": "ConvertedPrice",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['ParkingType']"
+											},
+											"sink": {
+												"name": "ParkingType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Property']['PriceUnformattedValue']"
+											},
+											"sink": {
+												"name": "PriceUnformattedValue",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "['Land']['SizeTotal']"
+											},
+											"sink": {
+												"name": "SizeTotal",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Land']['SizeFrontage']"
+											},
+											"sink": {
+												"name": "SizeFrontage",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['PostalCode']"
+											},
+											"sink": {
+												"name": "PostalCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ProvinceName']"
+											},
+											"sink": {
+												"name": "ProvinceName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['RelativeDetailsURL']"
+											},
+											"sink": {
+												"name": "RelativeDetailsURLSlug",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['StatusId']"
+											},
+											"sink": {
+												"name": "ListingStatusId",
+												"type": "Int16"
+											}
+										},
+										{
+											"source": {
+												"path": "['RelativeURLEn']"
+											},
+											"sink": {
+												"name": "RelativeURLEn",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['RelativeURLFr']"
+											},
+											"sink": {
+												"name": "RelativeURLFr",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['InsertedDateUTC']"
+											},
+											"sink": {
+												"name": "ListingInsertedDateUTC",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['TimeOnRealtor']"
+											},
+											"sink": {
+												"name": "TimeOnRealtor",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['Results']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_REST__listings",
+									"type": "DatasetReference",
+									"parameters": {
+										"latMax": "51.2124247",
+										"latMin": "50.8428219",
+										"lngMax": "-113.8598962",
+										"lngMin": "-114.3157738",
+										"currentPage": {
+											"value": "@variables('v_current_page')",
+											"type": "Expression"
+										},
+										"recordsPerPage": "50",
+										"sortOrder": "A",
+										"sortBy": "6",
+										"transactionTypeId": "2",
+										"propertySearchTypeId": "1",
+										"propertyTypeGroupId": "1",
+										"buildingTypeId": "1"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_ADLS_PARQUET_realtor_listings",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Set CurrentPage",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Residential Listings-House",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_current_page",
+								"value": {
+									"value": "@string(add(int(variables('v_initial_page')), 1))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set Initial equal to Current Page",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set CurrentPage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_initial_page",
+								"value": {
+									"value": "@variables('v_current_page')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Wait1",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Set Initial equal to Current Page",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						},
+						{
+							"name": "Set Current Page to 9999",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Residential Listings-House",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_current_page",
+								"value": "9999"
+							}
+						},
+						{
+							"name": "Set Initial equal to Current Page_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set Current Page to 9999",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_initial_page",
+								"value": {
+									"value": "@variables('v_current_page')",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Clear Current Day Folder If Exists",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set NumberofPages",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_empty_folder_if_exists",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"variables": {
+			"v_number_of_pages": {
+				"type": "String"
+			},
+			"v_number_of_records": {
+				"type": "String"
+			},
+			"v_current_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_initial_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_temp_num_pages": {
+				"type": "String",
+				"defaultValue": "4"
+			}
+		},
+		"folder": {
+			"name": "pg"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-09T01:13:52Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
