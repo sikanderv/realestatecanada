@@ -1,11 +1,11 @@
 {
-	"name": "2_create_external_data_sources",
+	"name": "2_create_external_data_sources_and_formats",
 	"properties": {
 		"folder": {
 			"name": "ldw"
 		},
 		"content": {
-			"query": "USE realtor;\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'realtor')\n CREATE EXTERNAL DATA SOURCE realtor\n WITH (\n     location = 'abfss://realtor@dlsprimarystorage.dfs.core.windows.net'\n )\nGO\n\n-- auto-generated code\n-- IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n-- \tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n-- \tWITH ( FORMAT_TYPE = PARQUET)\n-- GO\n\n-- IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'realtor_dlsprimarystorage_dfs_core_windows_net') \n-- \tCREATE EXTERNAL DATA SOURCE [realtor_dlsprimarystorage_dfs_core_windows_net] \n-- \tWITH (\n-- \t\tLOCATION = 'abfss://realtor@dlsprimarystorage.dfs.core.windows.net' \n-- \t)\n-- GO\n\n-- drop EXTERNAL DATA SOURCE realtor_main_folder;",
+			"query": "USE realtor;\n\n-- 'realtor' external data source \nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'realtor')\n CREATE EXTERNAL DATA SOURCE realtor\n WITH (\n     location = 'abfss://realtor@dlsprimarystorage.dfs.core.windows.net'\n )\nGO\n\n-- 'realtor_raw' external data source \nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'realtor_raw')\n CREATE EXTERNAL DATA SOURCE realtor_raw\n WITH (\n     location = 'abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw'\n )\nGO\n\n-- 'parquet' external file format\nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH (\n        FORMAT_TYPE = PARQUET,\n        DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n    )\nGO\n\n-- drop EXTERNAL DATA SOURCE realtor_main_folder;\n-- drop EXTERNAL FILE FORMAT parquet_file_format",
 			"metadata": {
 				"language": "sql"
 			},
