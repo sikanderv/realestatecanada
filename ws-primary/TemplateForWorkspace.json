@@ -3619,7 +3619,7 @@
 					"name": "ldw"
 				},
 				"content": {
-					"query": "-- This script is useless because CETAS allows you to run script only once.  \n-- If you need to re-create the external file that was created by the initial CETAS statement, you need to first drop the EXTERNAL TABLE\n-- then manually drop the folder and files from storage, and then re-run\nUSE realtor\nGO\n\nIF EXISTS (\n    SELECT * FROM sys.external_tables\n    WHERE name = 'StageListings2')\n    drop EXTERNAL table StageListings3;\n\nCREATE EXTERNAL TABLE StageListings3\n    WITH (\n        LOCATION = 'stage/',\n        DATA_SOURCE = realtor,\n        FILE_FORMAT = SynapseParquetFormat    \n    )\nAS\nSELECT\nDISTINCT *\nFROM\n    OPENROWSET(\n        BULK '/2023/05/05/*.parquet',\n        DATA_SOURCE = 'realtor_raw',\n        FORMAT = 'PARQUET'\n    )\nAS listings;\n\n\nSELECT COUNT(1) FROM StageListings3;",
+					"query": "-- This script is useless because CETAS allows you to run script only once.  \n-- If you need to re-create the external file that was created by the initial CETAS statement, you need to first drop the EXTERNAL TABLE\n-- then manually drop the folder and files from storage, and then re-run\n-- USE realtor\n-- GO\n\n-- IF EXISTS (\n--     SELECT * FROM sys.external_tables\n--     WHERE name = 'StageListings2')\n--     drop EXTERNAL table StageListings3;\n\n-- CREATE EXTERNAL TABLE StageListings3\n--     WITH (\n--         LOCATION = 'stage/',\n--         DATA_SOURCE = realtor,\n--         FILE_FORMAT = SynapseParquetFormat    \n--     )\n-- AS\n-- SELECT\n-- DISTINCT *\n-- FROM\n--     OPENROWSET(\n--         BULK '/2023/05/05/*.parquet',\n--         DATA_SOURCE = 'realtor_raw',\n--         FORMAT = 'PARQUET'\n--     )\n-- AS listings;\n\n\n-- SELECT COUNT(1) FROM StageListings3;",
 					"metadata": {
 						"language": "sql"
 					},
@@ -3709,8 +3709,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "integer"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "MlsNumber",
@@ -3722,8 +3721,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "PublicRemarks",
@@ -3735,8 +3733,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "BathroomTotal",
@@ -3748,8 +3745,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Bedrooms",
@@ -3761,8 +3757,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "SizeInterior",
@@ -3774,8 +3769,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "StoriesTotal",
@@ -3787,8 +3781,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "BuildingType",
@@ -3800,8 +3793,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Price",
@@ -3813,8 +3805,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "PropertyType",
@@ -3826,8 +3817,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "AddressText",
@@ -3839,8 +3829,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Longitude",
@@ -3851,8 +3840,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "double"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "Latitude",
@@ -3863,8 +3851,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "double"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ParkingSpaceTotal",
@@ -3876,8 +3863,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "TypeId",
@@ -3888,8 +3874,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "integer"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "OwnershipType",
@@ -3901,8 +3886,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "AmmenitiesNearBy",
@@ -3914,8 +3898,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ConvertedPrice",
@@ -3927,8 +3910,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ParkingType",
@@ -3940,8 +3922,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "PriceUnformattedValue",
@@ -3952,8 +3933,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "double"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "SizeTotal",
@@ -3965,8 +3945,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "SizeFrontage",
@@ -3978,8 +3957,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "PostalCode",
@@ -3991,8 +3969,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ProvinceName",
@@ -4004,8 +3981,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "RelativeDetailsURLSlug",
@@ -4017,8 +3993,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ListingStatusId",
@@ -4029,8 +4004,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "integer"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "RelativeURLEn",
@@ -4042,8 +4016,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "RelativeURLFr",
@@ -4055,8 +4028,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "ListingInsertedDateUTC",
@@ -4067,8 +4039,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "long"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									},
 									{
 										"Name": "TimeOnRealtor",
@@ -4080,8 +4051,7 @@
 											"Properties": {
 												"HIVE_TYPE_STRING": "string"
 											}
-										},
-										"DeltaFormatInvalidMessages": []
+										}
 									}
 								],
 								"Format": {
