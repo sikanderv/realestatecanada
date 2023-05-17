@@ -3674,7 +3674,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9a3b0c63-0f78-4880-8910-415dd5e67b2a"
+						"spark.autotune.trackingId": "70d02fe8-14f1-48d8-8f5e-4b90032cd22f"
 					}
 				},
 				"metadata": {
@@ -3749,7 +3749,7 @@
 							"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": 32
 					},
 					{
 						"cell_type": "code",
@@ -3770,7 +3770,7 @@
 							"display(listings_df.limit(5))"
 						],
 						"outputs": [],
-						"execution_count": 22
+						"execution_count": 33
 					},
 					{
 						"cell_type": "code",
@@ -3805,7 +3805,7 @@
 							"display(year_month_day_df.limit(5))"
 						],
 						"outputs": [],
-						"execution_count": 30
+						"execution_count": 34
 					},
 					{
 						"cell_type": "markdown",
@@ -3834,10 +3834,10 @@
 							}
 						},
 						"source": [
-							"year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")"
+							"# year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")"
 						],
 						"outputs": [],
-						"execution_count": 31
+						"execution_count": 35
 					},
 					{
 						"cell_type": "markdown",
@@ -3851,6 +3851,38 @@
 						"source": [
 							""
 						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"### Partition by Year, Month, and Day"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"partitioned_df = year_month_day_df.write.partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
+						],
+						"outputs": [],
+						"execution_count": 38
 					}
 				]
 			},
