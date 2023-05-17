@@ -26,15 +26,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/pg_main_json')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -3683,7 +3674,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "430c2adc-f765-4ef1-866b-06b92cd8b00a"
+						"spark.autotune.trackingId": "9a3b0c63-0f78-4880-8910-415dd5e67b2a"
 					}
 				},
 				"metadata": {
@@ -3724,7 +3715,7 @@
 							}
 						},
 						"source": [
-							""
+							"## Read all files from the raw layer"
 						]
 					},
 					{
@@ -3737,8 +3728,28 @@
 							}
 						},
 						"source": [
-							"Read all files from the raw layer"
+							"### Declare variables"
 						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
+							"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
+						],
+						"outputs": [],
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -3755,11 +3766,11 @@
 							"collapsed": false
 						},
 						"source": [
-							"listings_df = spark.read.parquet('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw/2023/05/10')\r\n",
+							"listings_df = spark.read.parquet(raw_container + \"/*/*/*\")\r\n",
 							"display(listings_df.limit(5))"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 22
 					},
 					{
 						"cell_type": "code",
@@ -3781,16 +3792,52 @@
 							"from pyspark.sql.types import *\r\n",
 							"\r\n",
 							"@F.udf\r\n",
-							"def get_id(in_string):\r\n",
+							"def get_datetime(in_string):\r\n",
 							"    return in_string.split(\"/\")[-1].split(\"_\")[0]\r\n",
 							"\r\n",
 							"filepath_df = listings_df.withColumn(\"source_file\", F.input_file_name())\r\n",
 							"\r\n",
-							"filepath_df = filepath_df.withColumn(\"source_file\", get_id(F.col(\"source_file\")))\r\n",
-							"display(filepath_df.limit(5))"
+							"filepath_df = filepath_df.withColumn(\"source_file\", F.substring(get_datetime(F.col(\"source_file\")),1,10))\r\n",
+							"\r\n",
+							"year_month_day_df = filepath_df.withColumn(\"year\", F.substring(F.col(\"source_file\"), 1, 4)) \\\r\n",
+							"                                .withColumn(\"month\", F.substring(F.col(\"source_file\"), 6, 2)) \\\r\n",
+							"                                .withColumn(\"day\", F.substring(F.col(\"source_file\"), 9, 2))\r\n",
+							"display(year_month_day_df.limit(5))"
 						],
 						"outputs": [],
-						"execution_count": 33
+						"execution_count": 30
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Save the transformed listings data"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")"
+						],
+						"outputs": [],
+						"execution_count": 31
 					},
 					{
 						"cell_type": "markdown",
