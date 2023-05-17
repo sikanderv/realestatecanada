@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "62b13c74-0919-4a55-bcc5-7c47e08decba"
+				"spark.autotune.trackingId": "7eb09902-5033-4541-b16c-fdf7374ca552"
 			}
 		},
 		"metadata": {
@@ -218,9 +218,10 @@
 					}
 				},
 				"source": [
-					"partitioned_df = year_month_day_df.write.partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
+					"year_month_day_df.write.partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")\n",
+					"year_month_day_df.write.mode('overwrite').saveAsTable('realtor.listings')"
 				],
-				"execution_count": 38
+				"execution_count": null
 			}
 		]
 	}
