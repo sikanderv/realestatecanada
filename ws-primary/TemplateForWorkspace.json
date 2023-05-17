@@ -26,6 +26,15 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/pg_main_json')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -3596,12 +3605,12 @@
 					"name": "discovery"
 				},
 				"content": {
-					"query": "-- SELECT\n--      *\n--     FROM\n--         OPENROWSET(\n--             BULK 'https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/2023/05*/*.parquet',\n--             FORMAT = 'PARQUET'\n--         ) AS [result]\n\n\n exec sp_describe_first_result_set N'\n    SELECT\n        TOP 10 *\n    FROM\n        OPENROWSET(\n            BULK ''https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/2023/05*/*.parquet'',\n            FORMAT = ''PARQUET''\n        ) AS [result]\n'",
+					"query": "SELECT\n     top 100 *\n    FROM\n        OPENROWSET(\n            BULK 'https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/*/*/*/*.parquet',\n            FORMAT = 'PARQUET'\n        ) AS [result]\n\n\nSELECT\n     top 100 *\n    FROM\n        OPENROWSET(\n            BULK 'https://dlsprimarystorage.dfs.core.windows.net/realtor/stage/*.parquet',\n            FORMAT = 'PARQUET'\n        ) AS [result]\n\n\n--  exec sp_describe_first_result_set N'\n--     SELECT\n--         TOP 10 *\n--     FROM\n--         OPENROWSET(\n--             BULK ''https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/2023/05*/*.parquet'',\n--             FORMAT = ''PARQUET''\n--         ) AS [result]\n-- '",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
+						"databaseName": "realtor",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -3650,6 +3659,153 @@
 					"resultLimit": 5000
 				},
 				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/1_silver_transform_listings')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sparkpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "430c2adc-f765-4ef1-866b-06b92cd8b00a"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/dc9c4ff8-158c-4aad-afb2-2ded35f739f6/resourceGroups/rg-primaryresourcegroup/providers/Microsoft.Synapse/workspaces/ws-primary/bigDataPools/sparkpool",
+						"name": "sparkpool",
+						"type": "Spark",
+						"endpoint": "https://ws-primary.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 10,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						]
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Read all files from the raw layer"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"listings_df = spark.read.parquet('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw/2023/05/10')\r\n",
+							"display(listings_df.limit(5))"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from pyspark.sql import functions as F\r\n",
+							"from pyspark.sql.functions import col\r\n",
+							"from pyspark.sql.types import *\r\n",
+							"\r\n",
+							"@F.udf\r\n",
+							"def get_id(in_string):\r\n",
+							"    return in_string.split(\"/\")[-1].split(\"_\")[0]\r\n",
+							"\r\n",
+							"filepath_df = listings_df.withColumn(\"source_file\", F.input_file_name())\r\n",
+							"\r\n",
+							"filepath_df = filepath_df.withColumn(\"source_file\", get_id(F.col(\"source_file\")))\r\n",
+							"display(filepath_df.limit(5))"
+						],
+						"outputs": [],
+						"execution_count": 33
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						]
+					}
+				]
 			},
 			"dependsOn": []
 		},
@@ -4097,6 +4253,31 @@
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sparkpool')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 10
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 3,
+					"minNodeCount": 3
+				},
+				"nodeCount": 10,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.3",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": true,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "canadacentral"
 		}
 	]
 }
