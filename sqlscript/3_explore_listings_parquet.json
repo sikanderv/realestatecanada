@@ -5,12 +5,12 @@
 			"name": "discovery"
 		},
 		"content": {
-			"query": "-- SELECT\n--      *\n--     FROM\n--         OPENROWSET(\n--             BULK 'https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/2023/05*/*.parquet',\n--             FORMAT = 'PARQUET'\n--         ) AS [result]\n\n\n exec sp_describe_first_result_set N'\n    SELECT\n        TOP 10 *\n    FROM\n        OPENROWSET(\n            BULK ''https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/2023/05*/*.parquet'',\n            FORMAT = ''PARQUET''\n        ) AS [result]\n'",
+			"query": "SELECT\n     top 100 *\n    FROM\n        OPENROWSET(\n            BULK 'https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/*/*/*/*.parquet',\n            FORMAT = 'PARQUET'\n        ) AS [result]\n\n\nSELECT\n     top 100 *\n    FROM\n        OPENROWSET(\n            BULK 'https://dlsprimarystorage.dfs.core.windows.net/realtor/stage/*.parquet',\n            FORMAT = 'PARQUET'\n        ) AS [result]\n\n\n--  exec sp_describe_first_result_set N'\n--     SELECT\n--         TOP 10 *\n--     FROM\n--         OPENROWSET(\n--             BULK ''https://dlsprimarystorage.dfs.core.windows.net/realtor/raw/2023/05*/*.parquet'',\n--             FORMAT = ''PARQUET''\n--         ) AS [result]\n-- '",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "master",
+				"databaseName": "realtor",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000
