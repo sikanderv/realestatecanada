@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9ad8ee81-3e42-4afb-b619-3657718a33dc"
+				"spark.autotune.trackingId": "7953f7ae-a35e-410d-ae0e-b84e7cbbb190"
 			}
 		},
 		"metadata": {
@@ -91,7 +91,7 @@
 					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
 					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 				],
-				"execution_count": 74
+				"execution_count": 152
 			},
 			{
 				"cell_type": "code",
@@ -111,7 +111,7 @@
 					"listings_df = spark.read.parquet(raw_container + \"/*/*/*\")\r\n",
 					"# display(listings_df.limit(5))"
 				],
-				"execution_count": 75
+				"execution_count": 153
 			},
 			{
 				"cell_type": "code",
@@ -145,7 +145,7 @@
 					"                                .withColumn(\"day\", F.substring(F.col(\"source_file\"), 9, 2))\r\n",
 					"# display(year_month_day_df.limit(5))"
 				],
-				"execution_count": 76
+				"execution_count": 154
 			},
 			{
 				"cell_type": "markdown",
@@ -176,7 +176,7 @@
 				"source": [
 					"# year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")"
 				],
-				"execution_count": 77
+				"execution_count": 155
 			},
 			{
 				"cell_type": "markdown",
@@ -220,7 +220,7 @@
 				"source": [
 					"# year_month_day_df.write.mode(\"overwrite\").partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
 				],
-				"execution_count": 78
+				"execution_count": 156
 			},
 			{
 				"cell_type": "code",
@@ -236,12 +236,12 @@
 					}
 				},
 				"source": [
-					"spark.conf.set(\r\n",
-					"  \"fs.azure.account.key.dlsprimarystorage.dfs.core.windows.net\",\r\n",
-					"  \"8BASPe4HfP9SLWrplFkMNUSAuXBEZmRmUiXjzruxFHP1/e9dS0zBS1o/4cn0ALA808nKliVldFN/+AStO1GBEg==\")\r\n",
+					"# spark.conf.set(\r\n",
+					"#   \"fs.azure.account.key.dlsprimarystorage.dfs.core.windows.net\",\r\n",
+					"#   \"8BASPe4HfP9SLWrplFkMNUSAuXBEZmRmUiXjzruxFHP1/e9dS0zBS1o/4cn0ALA808nKliVldFN/+AStO1GBEg==\")\r\n",
 					""
 				],
-				"execution_count": 79
+				"execution_count": 157
 			},
 			{
 				"cell_type": "code",
@@ -257,10 +257,27 @@
 					}
 				},
 				"source": [
-					"spark.sql(\"CREATE DATABASE IF NOT EXISTS Realtor\")\r\n",
-					"year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"Realtor.listings\")"
+					"spark.sql(\"CREATE DATABASE realtor\")"
 				],
-				"execution_count": 80
+				"execution_count": 158
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor.listings\")"
+				],
+				"execution_count": null
 			}
 		]
 	}
