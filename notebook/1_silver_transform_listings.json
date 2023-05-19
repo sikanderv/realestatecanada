@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "7953f7ae-a35e-410d-ae0e-b84e7cbbb190"
+				"spark.autotune.trackingId": "4f42950f-44bc-481e-b77f-586c2299c678"
 			}
 		},
 		"metadata": {
@@ -91,7 +91,7 @@
 					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
 					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 				],
-				"execution_count": 152
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -111,7 +111,7 @@
 					"listings_df = spark.read.parquet(raw_container + \"/*/*/*\")\r\n",
 					"# display(listings_df.limit(5))"
 				],
-				"execution_count": 153
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -145,7 +145,7 @@
 					"                                .withColumn(\"day\", F.substring(F.col(\"source_file\"), 9, 2))\r\n",
 					"# display(year_month_day_df.limit(5))"
 				],
-				"execution_count": 154
+				"execution_count": 24
 			},
 			{
 				"cell_type": "markdown",
@@ -157,7 +157,8 @@
 					}
 				},
 				"source": [
-					"## Save the transformed listings data"
+					"## OPTION 1:  Use Native dataframe method to persist data\r\n",
+					"#### Partition by Year, Month, and Day and persist into ADLS"
 				]
 			},
 			{
@@ -174,9 +175,10 @@
 					}
 				},
 				"source": [
-					"# year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")"
+					"# year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")\r\n",
+					"year_month_day_df.write.mode(\"overwrite\").partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
 				],
-				"execution_count": 155
+				"execution_count": 25
 			},
 			{
 				"cell_type": "markdown",
@@ -188,20 +190,8 @@
 					}
 				},
 				"source": [
-					""
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"metadata": {
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"### Partition by Year, Month, and Day"
+					"## OPTION 2:  Use Spark SQL to persist data\r\n",
+					"#### Create external table via Spark SQL and persist data into it and then transform ?"
 				]
 			},
 			{
@@ -218,9 +208,11 @@
 					}
 				},
 				"source": [
-					"# year_month_day_df.write.mode(\"overwrite\").partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
+					"spark.sql(\"CREATE DATABASE IF NOT EXISTS realtor_spark\")\r\n",
+					"year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
+					"year_month_day_df.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_spark.partitioned_listings\")"
 				],
-				"execution_count": 156
+				"execution_count": 26
 			},
 			{
 				"cell_type": "code",
@@ -233,15 +225,17 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
 				},
 				"source": [
-					"# spark.conf.set(\r\n",
-					"#   \"fs.azure.account.key.dlsprimarystorage.dfs.core.windows.net\",\r\n",
-					"#   \"8BASPe4HfP9SLWrplFkMNUSAuXBEZmRmUiXjzruxFHP1/e9dS0zBS1o/4cn0ALA808nKliVldFN/+AStO1GBEg==\")\r\n",
-					""
+					"%%sql\r\n",
+					"DROP TABLE realtor_spark.listings"
 				],
-				"execution_count": 157
+				"execution_count": 34
 			},
 			{
 				"cell_type": "code",
@@ -254,30 +248,19 @@
 						"transient": {
 							"deleting": false
 						}
-					}
-				},
-				"source": [
-					"spark.sql(\"CREATE DATABASE realtor\")"
-				],
-				"execution_count": 158
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
 					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
 				},
 				"source": [
-					"year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor.listings\")"
+					"%%sql\r\n",
+					"SELECT COUNT(DISTINCT(ListingId))\r\n",
+					"FROM realtor_spark.partitioned_listings\r\n",
+					"WHERE year = 2023 AND month = 05 AND DAY = 11"
 				],
-				"execution_count": null
+				"execution_count": 33
 			}
 		]
 	}
