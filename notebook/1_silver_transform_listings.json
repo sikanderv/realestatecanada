@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4f42950f-44bc-481e-b77f-586c2299c678"
+				"spark.autotune.trackingId": "aafab8cd-ff5f-46c6-b885-01495ee63dda"
 			}
 		},
 		"metadata": {
@@ -91,7 +91,7 @@
 					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
 					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 				],
-				"execution_count": 22
+				"execution_count": 31
 			},
 			{
 				"cell_type": "code",
@@ -111,7 +111,7 @@
 					"listings_df = spark.read.parquet(raw_container + \"/*/*/*\")\r\n",
 					"# display(listings_df.limit(5))"
 				],
-				"execution_count": 23
+				"execution_count": 32
 			},
 			{
 				"cell_type": "code",
@@ -145,7 +145,7 @@
 					"                                .withColumn(\"day\", F.substring(F.col(\"source_file\"), 9, 2))\r\n",
 					"# display(year_month_day_df.limit(5))"
 				],
-				"execution_count": 24
+				"execution_count": 33
 			},
 			{
 				"cell_type": "markdown",
@@ -176,9 +176,9 @@
 				},
 				"source": [
 					"# year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")\r\n",
-					"year_month_day_df.write.mode(\"overwrite\").partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
+					"# year_month_day_df.write.mode(\"overwrite\").partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
 				],
-				"execution_count": 25
+				"execution_count": 34
 			},
 			{
 				"cell_type": "markdown",
@@ -205,14 +205,37 @@
 						"transient": {
 							"deleting": false
 						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"drop_duplicates_df = year_month_day_df.dropDuplicates([\"ListingId\", \"MlsNumber\"])\r\n",
+					"distinct_df = year_month_day_df.distinct()\r\n",
+					"print(\"Total count: \" + str(year_month_day_df.count()))\r\n",
+					"print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
+					"print(\"Distinct count: \" + str(distinct_df.count()))"
+				],
+				"execution_count": 35
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
 					}
 				},
 				"source": [
-					"spark.sql(\"CREATE DATABASE IF NOT EXISTS realtor_spark\")\r\n",
-					"year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
-					"year_month_day_df.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_spark.partitioned_listings\")"
+					"spark.sql(\"CREATE DATABASE IF NOT EXISTS realtor_lake\")\r\n",
+					"# year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
+					"distinct_df.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings\")"
 				],
-				"execution_count": 26
+				"execution_count": 36
 			},
 			{
 				"cell_type": "code",
@@ -226,23 +249,22 @@
 							"deleting": false
 						}
 					},
-					"microsoft": {
-						"language": "sparksql"
-					},
 					"collapsed": false
 				},
 				"source": [
-					"%%sql\r\n",
-					"DROP TABLE realtor_spark.listings"
+					"# %%sql\r\n",
+					"# -- DROP TABLE realtor_spark.listingss\r\n",
+					"# -- DROP TABLE realtor_spark.partitioned_listings\r\n",
+					"# -- DROP TABLE listings"
 				],
-				"execution_count": 34
+				"execution_count": 37
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
 						"source_hidden": false,
-						"outputs_hidden": false
+						"outputs_hidden": true
 					},
 					"nteract": {
 						"transient": {
@@ -256,11 +278,44 @@
 				},
 				"source": [
 					"%%sql\r\n",
-					"SELECT COUNT(DISTINCT(ListingId))\r\n",
-					"FROM realtor_spark.partitioned_listings\r\n",
-					"WHERE year = 2023 AND month = 05 AND DAY = 11"
+					"SELECT COUNT(DISTINCT ListingId, MlsNumber)\r\n",
+					"FROM realtor_lake.listings\r\n",
+					"--WHERE year = 2023 AND month = 05 AND DAY = 11"
 				],
-				"execution_count": 33
+				"execution_count": 39
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": true
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# -- %%sql\r\n",
+					"# -- select * from realtor_lake.listings"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
 			}
 		]
 	}
