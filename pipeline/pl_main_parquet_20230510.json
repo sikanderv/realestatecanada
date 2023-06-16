@@ -559,6 +559,42 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "Populate Realtor Lake",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "DoUntilZeroPagesRemain",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "1_silver_transform_listings",
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": false
+					},
+					"driverSize": "Small"
+				}
 			}
 		],
 		"variables": {
