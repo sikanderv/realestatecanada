@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": {
-						"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.2124247', '&LatitudeMin=','50.8428219', '&LongitudeMax=', '-113.8598962', '&LongitudeMin=', '-114.3157738', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}",
+						"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}",
 						"type": "Expression"
 					},
 					"connectVia": {
@@ -418,10 +418,10 @@
 									"referenceName": "ds_REST__listings",
 									"type": "DatasetReference",
 									"parameters": {
-										"latMax": "51.2124247",
-										"latMin": "50.8428219",
-										"lngMax": "-113.8598962",
-										"lngMin": "-114.3157738",
+										"latMax": "51.43835",
+										"latMin": "50.61436",
+										"lngMax": "-112.62848",
+										"lngMin": "-115.54536",
 										"currentPage": {
 											"value": "@variables('v_current_page')",
 											"type": "Expression"
