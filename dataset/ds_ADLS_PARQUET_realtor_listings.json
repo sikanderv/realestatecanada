@@ -5,13 +5,19 @@
 			"referenceName": "ws-primary-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"p_building_type_name": {
+				"type": "String",
+				"defaultValue": "house"
+			}
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@concat(formatDateTime(utcNow()), '_house.parquet')",
+					"value": "@concat(formatDateTime(utcNow()), '_', dataset().p_building_type_name, '.parquet')",
 					"type": "Expression"
 				},
 				"folderPath": {

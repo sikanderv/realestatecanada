@@ -1,5 +1,5 @@
 {
-	"name": "pl_get_detached",
+	"name": "pl_get_detached_listings",
 	"properties": {
 		"activities": [
 			{
@@ -47,6 +47,12 @@
 						]
 					}
 				],
+				"policy": {
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "v_number_of_records",
@@ -67,6 +73,12 @@
 						]
 					}
 				],
+				"policy": {
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "v_number_of_pages",
@@ -454,6 +466,12 @@
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_current_page",
@@ -474,6 +492,12 @@
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_initial_page",
@@ -510,6 +534,12 @@
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_current_page",
@@ -527,6 +557,12 @@
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_initial_page",

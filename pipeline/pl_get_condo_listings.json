@@ -1,5 +1,5 @@
 {
-	"name": "pl_main_parquet_20230510",
+	"name": "pl_get_condo_listings",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": {
-						"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}",
+						"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', pipeline().parameters.p_building_type_id)}",
 						"type": "Expression"
 					},
 					"connectVia": {
@@ -47,6 +47,12 @@
 						]
 					}
 				],
+				"policy": {
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "v_number_of_records",
@@ -67,6 +73,12 @@
 						]
 					}
 				],
+				"policy": {
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "v_number_of_pages",
@@ -95,7 +107,7 @@
 					},
 					"activities": [
 						{
-							"name": "Get Residential Listings-House",
+							"name": "Get Residential Listings-Condo",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -432,7 +444,10 @@
 										"transactionTypeId": "2",
 										"propertySearchTypeId": "1",
 										"propertyTypeGroupId": "1",
-										"buildingTypeId": "1"
+										"buildingTypeId": {
+											"value": "@pipeline().parameters.p_building_type_id",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -448,12 +463,18 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Get Residential Listings-House",
+									"activity": "Get Residential Listings-Condo",
 									"dependencyConditions": [
 										"Succeeded"
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_current_page",
@@ -474,6 +495,12 @@
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_initial_page",
@@ -504,12 +531,18 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Get Residential Listings-House",
+									"activity": "Get Residential Listings-Condo",
 									"dependencyConditions": [
 										"Failed"
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_current_page",
@@ -527,6 +560,12 @@
 									]
 								}
 							],
+							"policy": {
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "v_initial_page",
@@ -597,6 +636,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"p_building_type_id": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"v_number_of_pages": {
 				"type": "String"
@@ -615,6 +659,9 @@
 			"v_temp_num_pages": {
 				"type": "String",
 				"defaultValue": "4"
+			},
+			"v_building_type": {
+				"type": "String"
 			}
 		},
 		"folder": {
