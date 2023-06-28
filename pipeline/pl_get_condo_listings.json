@@ -454,7 +454,13 @@
 							"outputs": [
 								{
 									"referenceName": "ds_ADLS_PARQUET_realtor_listings",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"p_ds_building_type_name": {
+											"value": "@pipeline().parameters.p_building_type_name",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -639,6 +645,9 @@
 		"parameters": {
 			"p_building_type_id": {
 				"type": "string"
+			},
+			"p_building_type_name": {
+				"type": "string"
 			}
 		},
 		"variables": {
@@ -660,7 +669,7 @@
 				"type": "String",
 				"defaultValue": "4"
 			},
-			"v_building_type": {
+			"v_building_type_name": {
 				"type": "String"
 			}
 		},
