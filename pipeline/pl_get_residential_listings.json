@@ -1,5 +1,5 @@
 {
-	"name": "pl_get_condo_listings",
+	"name": "pl_get_residential_listings",
 	"properties": {
 		"activities": [
 			{
