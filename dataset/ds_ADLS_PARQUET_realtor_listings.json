@@ -7,8 +7,7 @@
 		},
 		"parameters": {
 			"p_building_type_name": {
-				"type": "String",
-				"defaultValue": "house"
+				"type": "String"
 			}
 		},
 		"annotations": [],
