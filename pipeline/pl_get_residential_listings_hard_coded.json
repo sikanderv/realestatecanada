@@ -426,7 +426,7 @@
 											},
 											"sink": {
 												"name": "PriceChangeDateUTC",
-												"type": "DateTime"
+												"type": "String"
 											}
 										}
 									],
