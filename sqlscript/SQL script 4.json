@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 4",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [ListingId]\n,[MlsNumber]\n,[PublicRemarks]\n,[BathroomTotal]\n,[Bedrooms]\n,[SizeInterior]\n,[StoriesTotal]\n,[BuildingType]\n,[Price]\n,[PropertyType]\n,[AddressText]\n,[Longitude]\n,[Latitude]\n,[ParkingSpaceTotal]\n,[TypeId]\n,[OwnershipType]\n,[AmmenitiesNearBy]\n,[ConvertedPrice]\n,[ParkingType]\n,[PriceUnformattedValue]\n,[SizeTotal]\n,[SizeFrontage]\n,[PostalCode]\n,[ProvinceName]\n,[RelativeDetailsURLSlug]\n,[ListingStatusId]\n,[RelativeURLEn]\n,[RelativeURLFr]\n,[ListingInsertedDateUTC]\n,[TimeOnRealtor]\n,[source_file]\n,[year]\n,[month]\n,[day]\n FROM [realtor_lake].[dbo].[listings]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "realtor_lake",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
