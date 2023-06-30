@@ -419,6 +419,15 @@
 												"name": "TimeOnRealtor",
 												"type": "String"
 											}
+										},
+										{
+											"source": {
+												"path": "['PriceChangeDateUTC']"
+											},
+											"sink": {
+												"name": "PriceChangeDateUTC",
+												"type": "DateTime"
+											}
 										}
 									],
 									"collectionReference": "$['Results']",
