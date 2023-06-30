@@ -3,36 +3,32 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
+				"name": "Populate Realtor Lake",
+				"type": "SynapseNotebook",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "v_current_date",
-					"value": {
-						"value": "@string(dayOfMonth(utcNow()))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set variable2",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set variable1",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "v_rapidapi_key",
-					"value": {
-						"value": "@if(equals(variables('v_current_date'), '18'), 'today', 'not-today')",
-						"type": "Expression"
-					}
+					"notebook": {
+						"referenceName": "1_silver_transform_listings",
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": false
+					},
+					"driverSize": "Small"
 				}
 			}
 		],
