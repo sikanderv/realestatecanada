@@ -17,7 +17,13 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ds_FOLDER_PARQUET_exists_check",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"building_type_name": {
+								"value": "@pipeline().parameters.p_building_type_name",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
 						"exists"
@@ -90,6 +96,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"p_building_type_name": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"v_current_page": {
 				"type": "String",
