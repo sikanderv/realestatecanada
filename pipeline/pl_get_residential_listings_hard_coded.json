@@ -621,7 +621,7 @@
 					{
 						"activity": "DoUntilZeroPagesRemain",
 						"dependencyConditions": [
-							"Succeeded"
+							"Skipped"
 						]
 					}
 				],
