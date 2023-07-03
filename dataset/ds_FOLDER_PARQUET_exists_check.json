@@ -7,8 +7,7 @@
 		},
 		"parameters": {
 			"p_ds_building_type_name": {
-				"type": "string",
-				"defaultValue": "house"
+				"type": "string"
 			}
 		},
 		"annotations": [],
