@@ -17,11 +17,11 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@concat(formatDateTime(utcNow()), '_', dataset().p_ds_building_type_name, '.parquet')",
+					"value": "@concat(formatDateTime(utcNow()), '.parquet')",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat('raw/', formatDateTime(utcNow(),'yyyy'), '/', formatDateTime(utcNow(),'MM'), '/', formatDateTime(utcNow(),'dd'))",
+					"value": "@concat('raw/', formatDateTime(utcNow(),'yyyy'), '/', formatDateTime(utcNow(),'MM'), '/', formatDateTime(utcNow(),'dd'), '/', dataset().p_ds_building_type_name)",
 					"type": "Expression"
 				},
 				"fileSystem": "realtor"

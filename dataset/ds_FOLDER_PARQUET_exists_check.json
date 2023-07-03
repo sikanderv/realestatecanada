@@ -5,13 +5,19 @@
 			"referenceName": "ws-primary-WorkspaceDefaultStorage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"p_ds_building_type_name": {
+				"type": "string",
+				"defaultValue": "house"
+			}
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": {
-					"value": "@concat('raw/', formatDateTime(utcNow(),'yyyy'), '/', formatDateTime(utcNow(),'MM'), '/', formatDateTime(utcNow(),'dd'))",
+					"value": "@concat('raw/', formatDateTime(utcNow(),'yyyy'), '/', formatDateTime(utcNow(),'MM'), '/', formatDateTime(utcNow(),'dd'), '/', dataset().p_ds_building_type_name)",
 					"type": "Expression"
 				},
 				"fileSystem": "realtor"
