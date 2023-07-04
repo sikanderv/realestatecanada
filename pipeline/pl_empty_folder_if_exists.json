@@ -73,7 +73,10 @@
 									"referenceName": "ds_ADLS_PARQUET_realtor_listings",
 									"type": "DatasetReference",
 									"parameters": {
-										"p_ds_building_type_name": "house"
+										"p_ds_building_type_name": {
+											"value": "@pipeline().parameters.p_building_type_name",
+											"type": "Expression"
+										}
 									}
 								},
 								"logStorageSettings": {
