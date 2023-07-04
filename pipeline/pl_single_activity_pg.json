@@ -12,10 +12,21 @@
 						"referenceName": "pl_empty_folder_if_exists",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"p_building_type_name": {
+							"value": "@pipeline().parameters.p_outer_building_type",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
+		"parameters": {
+			"p_outer_building_type": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"v_rapidapi_key": {
 				"type": "String"
