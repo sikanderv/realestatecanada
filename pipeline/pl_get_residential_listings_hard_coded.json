@@ -611,7 +611,13 @@
 						"referenceName": "pl_empty_folder_if_exists",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"p_building_type_name": {
+							"value": "@pipeline().parameters.p_building_type_name",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -621,7 +627,7 @@
 					{
 						"activity": "DoUntilZeroPagesRemain",
 						"dependencyConditions": [
-							"Skipped"
+							"Succeeded"
 						]
 					}
 				],
