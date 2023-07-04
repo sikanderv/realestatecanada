@@ -2,7 +2,7 @@
 	"name": "SQL script 3",
 	"properties": {
 		"content": {
-			"query": "SELECT TOP (100) *\n FROM [realtor_lake].[dbo].[listings]\n WHERE [day] = 30 and [month] = '06'",
+			"query": "SELECT TOP (100) *\n FROM [realtor_lake].[dbo].[listings]\n WHERE [day] = '03' and [month] = '07'",
 			"metadata": {
 				"language": "sql"
 			},
