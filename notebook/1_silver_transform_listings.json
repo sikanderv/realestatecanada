@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5a651322-9e99-4545-bb3f-e4464af16ea9"
+				"spark.autotune.trackingId": "fb6f19e9-7501-4da8-88a7-18aa2f041810"
 			}
 		},
 		"metadata": {
@@ -91,7 +91,7 @@
 					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
 					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 				],
-				"execution_count": 26
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -274,9 +274,10 @@
 				},
 				"source": [
 					"# %%sql\r\n",
-					"# --  DROP TABLE realtor_lake.listings"
+					"# -- DROP TABLE realtor_lake.listings\r\n",
+					"# -- DROP DATABASE realtor_spark"
 				],
-				"execution_count": 37
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
