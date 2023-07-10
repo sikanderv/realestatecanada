@@ -629,7 +629,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "1_silver_transform_listings",
+						"referenceName": "1_bronze_transform_listings",
 						"type": "NotebookReference"
 					},
 					"snapshot": true,

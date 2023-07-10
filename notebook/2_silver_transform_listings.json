@@ -1,5 +1,5 @@
 {
-	"name": "2_gold_transform_listings",
+	"name": "2_silver_transform_listings",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "eb21a89d-8bc8-4820-9f8e-f6b3097603d6"
+				"spark.autotune.trackingId": "b453c095-7228-443b-b09a-07e3cc079c0d"
 			}
 		},
 		"metadata": {
@@ -80,7 +80,7 @@
 					"# df = spark.read.csv('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw')\r\n",
 					"# df.show()"
 				],
-				"execution_count": 3
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -102,7 +102,29 @@
 					"from pyspark.sql.types import *\r\n",
 					"import datetime"
 				],
-				"execution_count": 11
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": true
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
+					"# stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\"\r\n",
+					"# listings_df = spark.read.parquet(raw_container + \"/*/*/*/*/\")\r\n",
+					"# display(listings_df.limit(1))"
+				],
+				"execution_count": 28
 			},
 			{
 				"cell_type": "code",
@@ -119,9 +141,11 @@
 				},
 				"source": [
 					"listings_raw = spark.sql(\"SELECT * FROM realtor_lake.listings\")\r\n",
-					"# display(listings_raw.limit(50))"
+					"# display(listings_raw.limit(50))\r\n",
+					"\r\n",
+					""
 				],
-				"execution_count": 5
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -155,7 +179,7 @@
 					"                                )\r\n",
 					"# df.select(F.col(\"ListingInsertedMicroSecondsValue\")).show()"
 				],
-				"execution_count": 6
+				"execution_count": 16
 			},
 			{
 				"cell_type": "markdown",
@@ -193,7 +217,7 @@
 					"#df1 = df.withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\"))\r\n",
 					"# df1.select(F.col(\"ListingInsertedTimestampUTC\")).show()"
 				],
-				"execution_count": 12
+				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",
@@ -226,10 +250,28 @@
 				},
 				"source": [
 					"df1 = df \\\r\n",
-					"        .withColumn(\"ListingInsertedTimestampUTC\",new_f(\"ListingInsertedMicroSecondsValue\")) \\\r\n",
+					"        .withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\")) \\\r\n",
 					"        .withColumn(\"ListingInsertedDateMT\", F.from_utc_timestamp(F.col(\"ListingInsertedTimestampUTC\"), \"America/Edmonton\")) \\\r\n",
 					"        .withColumn(\"PriceChangeDateTimeStampUTC\", F.to_timestamp(F.col(\"PriceChangeDateUTC\"), \"yyyy-MM-dd h:mm:ss a\")) \\\r\n",
 					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\"))"
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df1.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_silver\")"
 				],
 				"execution_count": null
 			},
