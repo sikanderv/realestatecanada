@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9ca3005b-e800-4f11-a704-eb641f529e27"
+				"spark.autotune.trackingId": "4dca495a-e327-40a0-9534-e054de1fd8d2"
 			}
 		},
 		"metadata": {
@@ -99,9 +99,10 @@
 				"source": [
 					"from pyspark.sql import functions as F\r\n",
 					"from pyspark.sql.functions import col\r\n",
-					"from pyspark.sql.types import *"
+					"from pyspark.sql.types import *\r\n",
+					"import datetime"
 				],
-				"execution_count": 4
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -188,9 +189,11 @@
 					"\r\n",
 					"new_f = F.udf(microseconds_to_string, TimestampType())\r\n",
 					"\r\n",
-					"df1 = df.withColumn(\"ListingInsertedTimestampUTC\",new_f(\"ListingInsertedMicroSecondsValue\"))"
+					"df1 = df.withColumn(\"ListingInsertedTimestampUTC\",new_f(\"ListingInsertedMicroSecondsValue\"))\r\n",
+					"\r\n",
+					"df1.select(F.col(\"ListingInsertedTimestampUTC\")).show()"
 				],
-				"execution_count": null
+				"execution_count": 12
 			},
 			{
 				"cell_type": "markdown",
