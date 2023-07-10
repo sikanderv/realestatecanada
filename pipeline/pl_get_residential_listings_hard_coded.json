@@ -116,11 +116,11 @@
 							"userProperties": [
 								{
 									"name": "Source",
-									"value": "@{concat('properties/list-residential?LatitudeMax=', '51.2124247', '&LatitudeMin=','50.8428219', '&LongitudeMax=', '-113.8598962', '&LongitudeMin=', '-114.3157738', '&CurrentPage=', variables('v_current_page'), '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', '1')}"
+									"value": "@{concat('properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', variables('v_current_page'), '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', pipeline().parameters.p_building_type_id)}"
 								},
 								{
 									"name": "Destination",
-									"value": "realtor/@{concat('raw/', formatDateTime(utcNow(),'yyyy'), '/', formatDateTime(utcNow(),'MM'))}/concat(formatDateTime(utcNow(),'dd), '_house.json')"
+									"value": "realtor/@{concat('raw/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'yyyy'), '/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'MM'), '/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'dd'), '/', pipeline().parameters.p_building_type_name)}/@{concat(formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time')), '.parquet')}"
 								}
 							],
 							"typeProperties": {
