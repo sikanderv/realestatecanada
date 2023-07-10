@@ -25,7 +25,7 @@
 					},
 					"method": "GET",
 					"headers": {
-						"X-RapidAPI-Key": "d5309c84ebmsh9778152a2a89736p1bad24jsn77dceff0b8aa",
+						"X-RapidAPI-Key": "dcff78af51mshf5a98ad43283e3bp178974jsnee7f22736f6a",
 						"X-RapidAPI-Host": "realty-in-ca1.p.rapidapi.com"
 					},
 					"linkedServices": [
@@ -48,8 +48,6 @@
 					}
 				],
 				"policy": {
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
@@ -74,8 +72,6 @@
 					}
 				],
 				"policy": {
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
@@ -485,8 +481,6 @@
 								}
 							],
 							"policy": {
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
 							},
@@ -511,8 +505,6 @@
 								}
 							],
 							"policy": {
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
 							},
@@ -553,8 +545,6 @@
 								}
 							],
 							"policy": {
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
 							},
@@ -576,8 +566,6 @@
 								}
 							],
 							"policy": {
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
 							},
