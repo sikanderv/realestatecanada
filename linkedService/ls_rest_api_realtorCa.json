@@ -12,10 +12,6 @@
 				"X-RapidAPI-Key": {
 					"type": "SecureString",
 					"value": "**********"
-				},
-				"X-RapidAPI-Host": {
-					"type": "SecureString",
-					"value": "**********"
 				}
 			}
 		},
