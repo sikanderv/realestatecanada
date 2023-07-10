@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4dca495a-e327-40a0-9534-e054de1fd8d2"
+				"spark.autotune.trackingId": "eb21a89d-8bc8-4820-9f8e-f6b3097603d6"
 			}
 		},
 		"metadata": {
@@ -133,7 +133,7 @@
 					}
 				},
 				"source": [
-					"### Convert ListingInsertedDate string to long type and divide by 10 to obtain microseconds"
+					"##### Convert ListingInsertedDate string to long type and divide by 10 to obtain microseconds"
 				]
 			},
 			{
@@ -167,7 +167,48 @@
 					}
 				},
 				"source": [
-					"##### Define UDF to convert the microseconds value to a date timestamp"
+					"###### Define UDF to convert the microseconds value to a date timestamp"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": true
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def microseconds_to_string(mseconds):\r\n",
+					"        return datetime.datetime(1,1,1) + datetime.timedelta(microseconds= mseconds)\r\n",
+					"\r\n",
+					"var_f_time_conversion = F.udf(microseconds_to_string, TimestampType())\r\n",
+					"\r\n",
+					"# Test if successfully converted\r\n",
+					"#df1 = df.withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\"))\r\n",
+					"# df1.select(F.col(\"ListingInsertedTimestampUTC\")).show()"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"###### Add new column ListingInsertedTimestampUTC, converted from LONG to timestamp (with UDF)\r\n",
+					"###### Add new column ListingInsertedTimestampMT, timezone converted from UTC to MT\r\n",
+					"###### Add new column PriceChangeDateTimeStampUTC, converted from STRING to timestamp\r\n",
+					"###### Add new column PriceChangeDateTimeStampMT, timezone converted from UTC to MT"
 				]
 			},
 			{
@@ -184,16 +225,13 @@
 					}
 				},
 				"source": [
-					"def microseconds_to_string(mseconds):\r\n",
-					"        return datetime.datetime(1,1,1) + datetime.timedelta(microseconds= mseconds)\r\n",
-					"\r\n",
-					"new_f = F.udf(microseconds_to_string, TimestampType())\r\n",
-					"\r\n",
-					"df1 = df.withColumn(\"ListingInsertedTimestampUTC\",new_f(\"ListingInsertedMicroSecondsValue\"))\r\n",
-					"\r\n",
-					"df1.select(F.col(\"ListingInsertedTimestampUTC\")).show()"
+					"df1 = df \\\r\n",
+					"        .withColumn(\"ListingInsertedTimestampUTC\",new_f(\"ListingInsertedMicroSecondsValue\")) \\\r\n",
+					"        .withColumn(\"ListingInsertedDateMT\", F.from_utc_timestamp(F.col(\"ListingInsertedTimestampUTC\"), \"America/Edmonton\")) \\\r\n",
+					"        .withColumn(\"PriceChangeDateTimeStampUTC\", F.to_timestamp(F.col(\"PriceChangeDateUTC\"), \"yyyy-MM-dd h:mm:ss a\")) \\\r\n",
+					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\"))"
 				],
-				"execution_count": 12
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
