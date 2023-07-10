@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "dafd2c77-fb9f-40b6-9ee4-b18db7d01208"
+				"spark.autotune.trackingId": "9ca3005b-e800-4f11-a704-eb641f529e27"
 			}
 		},
 		"metadata": {
@@ -168,6 +168,29 @@
 				"source": [
 					"##### Define UDF to convert the microseconds value to a date timestamp"
 				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def microseconds_to_string(mseconds):\r\n",
+					"        return datetime.datetime(1,1,1) + datetime.timedelta(microseconds= mseconds)\r\n",
+					"\r\n",
+					"new_f = F.udf(microseconds_to_string, TimestampType())\r\n",
+					"\r\n",
+					"df1 = df.withColumn(\"ListingInsertedTimestampUTC\",new_f(\"ListingInsertedMicroSecondsValue\"))"
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
