@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3bac333c-1afa-4c13-bea3-b23e7b5b82ce"
+				"spark.autotune.trackingId": "e1f2be60-70bf-45e6-adc7-df94fd907c1f"
 			}
 		},
 		"metadata": {
@@ -272,10 +272,10 @@
 					}
 				},
 				"source": [
-					"import datetime\r\n",
-					"import time\r\n",
-					"ticks = 638229561089970000\r\n",
-					"print(datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds = ticks //10))"
+					"# import datetime\r\n",
+					"# import time\r\n",
+					"# ticks = 638229561089970000\r\n",
+					"# print(datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds = ticks //10))"
 				],
 				"execution_count": null
 			},
@@ -312,16 +312,13 @@
 							"deleting": false
 						}
 					},
-					"microsoft": {
-						"language": "sparksql"
-					},
 					"collapsed": false
 				},
 				"source": [
-					"%%sql\r\n",
-					"-- SELECT COUNT(DISTINCT ListingId, MlsNumber)\r\n",
-					"-- FROM realtor_lake.listings\r\n",
-					"--WHERE year = 2023 AND month = 05 AND DAY = 11"
+					"# %%sql\r\n",
+					"# -- SELECT COUNT(DISTINCT ListingId, MlsNumber)\r\n",
+					"# -- FROM realtor_lake.listings\r\n",
+					"# --WHERE year = 2023 AND month = 05 AND DAY = 11"
 				],
 				"execution_count": 13
 			},
