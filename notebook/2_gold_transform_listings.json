@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "164f5f45-f36c-4b6e-af3e-cf74d2e0fa6a"
+				"spark.autotune.trackingId": "c6ae0b2f-4b84-4590-8cd2-72c8e83e0920"
 			}
 		},
 		"metadata": {
@@ -117,7 +117,8 @@
 					}
 				},
 				"source": [
-					""
+					"listings_raw = spark.sql(\"SELECT * FROM realtor_lake.listings\")\r\n",
+					"display(listings_raw.limit(50))"
 				],
 				"execution_count": null
 			},
