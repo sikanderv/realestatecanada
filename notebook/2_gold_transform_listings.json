@@ -1,0 +1,361 @@
+{
+	"name": "2_gold_transform_listings",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "5718ee3f-09d2-4b8f-aee1-2960828d3b03"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/dc9c4ff8-158c-4aad-afb2-2ded35f739f6/resourceGroups/rg-primaryresourcegroup/providers/Microsoft.Synapse/workspaces/ws-primary/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://ws-primary.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Read all files from the raw layer"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Declare variables"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
+					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# spark.conf.set(\"spark.storage.synapse.linkedServiceName\", \"ws-primary-WorkspaceDefaultStorage\")\r\n",
+					"# spark.conf.set(\"fs.azure.account.oauth.provider.type\", \"com.microsoft.azure.synapse.tokenlibrary.LinkedServiceBasedTokenProvider\")\r\n",
+					"# df = spark.read.csv('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw')\r\n",
+					"# df.show()"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"listings_df = spark.read.parquet(raw_container + \"/*/*/*/*\")\r\n",
+					"# display(listings_df.limit(5))"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql import functions as F\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"from pyspark.sql.types import *\r\n",
+					"\r\n",
+					"@F.udf\r\n",
+					"def get_datetime(in_string):\r\n",
+					"    return in_string.split(\"/\")[-1].split(\"_\")[0]\r\n",
+					"\r\n",
+					"filepath_df = listings_df.withColumn(\"source_file\", F.input_file_name())\r\n",
+					"\r\n",
+					"filepath_df = filepath_df.withColumn(\"source_file\", F.substring(get_datetime(F.col(\"source_file\")),1,10))\r\n",
+					"\r\n",
+					"year_month_day_df = filepath_df.withColumn(\"year\", F.substring(F.col(\"source_file\"), 1, 4)) \\\r\n",
+					"                                .withColumn(\"month\", F.substring(F.col(\"source_file\"), 6, 2)) \\\r\n",
+					"                                .withColumn(\"day\", F.substring(F.col(\"source_file\"), 9, 2))\r\n",
+					"# display(year_month_day_df.limit(5))"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## OPTION 1:  Use Native dataframe method to persist data\r\n",
+					"#### Partition by Year, Month, and Day and persist into ADLS"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")\r\n",
+					"# year_month_day_df.write.mode(\"overwrite\").partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## OPTION 2:  Use Spark SQL to persist data\r\n",
+					"#### Create external table via Spark SQL and persist data into it and then transform ?"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"drop_duplicates_df = year_month_day_df.dropDuplicates([\"ListingId\", \"MlsNumber\"])\r\n",
+					"distinct_df = year_month_day_df.distinct()\r\n",
+					"print(\"Total count: \" + str(year_month_day_df.count()))\r\n",
+					"print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
+					"print(\"Distinct count: \" + str(distinct_df.count()))"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql(\"CREATE DATABASE IF NOT EXISTS realtor_lake\")\r\n",
+					"# year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
+					"distinct_df.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings\")"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# import datetime\r\n",
+					"# import time\r\n",
+					"# ticks = 638229561089970000\r\n",
+					"# print(datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds = ticks //10))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# %%sql\r\n",
+					"# -- DROP TABLE realtor_lake.listings\r\n",
+					"# -- DROP DATABASE realtor_spark"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# %%sql\r\n",
+					"# -- SELECT COUNT(DISTINCT ListingId, MlsNumber)\r\n",
+					"# -- FROM realtor_lake.listings\r\n",
+					"# --WHERE year = 2023 AND month = 05 AND DAY = 11"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# %%sql\r\n",
+					"# -- select * from realtor_lake.listings\r\n",
+					"# -- select length('638229561089970000')"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
+			}
+		]
+	}
+}
