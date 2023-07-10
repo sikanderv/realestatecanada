@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c6ae0b2f-4b84-4590-8cd2-72c8e83e0920"
+				"spark.autotune.trackingId": "db281c93-2445-401d-bbba-4b6daea14be3"
 			}
 		},
 		"metadata": {
@@ -118,7 +118,38 @@
 				},
 				"source": [
 					"listings_raw = spark.sql(\"SELECT * FROM realtor_lake.listings\")\r\n",
-					"display(listings_raw.limit(50))"
+					"# display(listings_raw.limit(50))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Convert ListingInsertedDate string to long type and divide by 10 to obtain microseconds"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
 				],
 				"execution_count": null
 			},
