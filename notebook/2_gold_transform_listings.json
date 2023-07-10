@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2ddb10f8-472e-4b39-8fcd-8af48d1b151a"
+				"spark.autotune.trackingId": "17b0a4da-631d-475c-8be4-ad50ee7a625c"
 			}
 		},
 		"metadata": {
@@ -151,7 +151,8 @@
 				"source": [
 					"df = listings_raw.withColumn(\"ListingInsertedMicroSecondsValue\",\r\n",
 					"                                F.floor(listings_raw.ListingInsertedDateUTC.cast(LongType()) / 10)\r\n",
-					"                                )"
+					"                                )\r\n",
+					"df.select(F.col(\"ListingInsertedMicroSecondsValue\")).show()"
 				],
 				"execution_count": null
 			},
