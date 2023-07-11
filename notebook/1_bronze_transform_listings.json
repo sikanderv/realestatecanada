@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c8e951c9-5e31-4813-9940-8c0f6f67bea7"
+				"spark.autotune.trackingId": "60ca0688-fda9-450d-9df1-07b0bd649a26"
 			}
 		},
 		"metadata": {
@@ -298,7 +298,7 @@
 				"source": [
 					"spark.sql(\"CREATE DATABASE IF NOT EXISTS realtor_lake\")\r\n",
 					"# year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
-					"distinct_df.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings\")"
+					"distinct_df.write.mode(\"append\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings\")"
 				],
 				"execution_count": 11
 			},
@@ -359,33 +359,10 @@
 					"collapsed": false
 				},
 				"source": [
-					"# %%sql\r\n",
-					"# -- SELECT COUNT(DISTINCT ListingId, MlsNumber)\r\n",
-					"# -- FROM realtor_lake.listings\r\n",
-					"# --WHERE year = 2023 AND month = 05 AND DAY = 11"
+					"SELECT COUNT(1)\r\n",
+					"FROM realtor_lake.listings"
 				],
 				"execution_count": 13
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"# %%sql\r\n",
-					"# -- select * from realtor_lake.listings\r\n",
-					"# -- select length('638229561089970000')"
-				],
-				"execution_count": 17
 			},
 			{
 				"cell_type": "markdown",
