@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4f7f9b07-b7ac-445f-88ff-1428c1a9adf1"
+				"spark.autotune.trackingId": "459ba82d-b48b-43b2-a608-44d9ac37b126"
 			}
 		},
 		"metadata": {
@@ -80,7 +80,7 @@
 					"# df = spark.read.csv('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw')\r\n",
 					"# df.show()"
 				],
-				"execution_count": 13
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -102,7 +102,7 @@
 					"from pyspark.sql.types import *\r\n",
 					"import datetime"
 				],
-				"execution_count": 14
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -124,7 +124,7 @@
 					"# listings_df = spark.read.parquet(raw_container + \"/*/*/*/*/\")\r\n",
 					"# display(listings_df.limit(1))"
 				],
-				"execution_count": 28
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -145,7 +145,20 @@
 					"\r\n",
 					""
 				],
-				"execution_count": 15
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
 			},
 			{
 				"cell_type": "markdown",
@@ -179,7 +192,7 @@
 					"                                )\r\n",
 					"# df.select(F.col(\"ListingInsertedMicroSecondsValue\")).show()"
 				],
-				"execution_count": 16
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -217,7 +230,7 @@
 					"#df1 = df.withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\"))\r\n",
 					"# df1.select(F.col(\"ListingInsertedTimestampUTC\")).show()"
 				],
-				"execution_count": 17
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
@@ -255,7 +268,7 @@
 					"        .withColumn(\"PriceChangeDateTimeStampUTC\", F.to_timestamp(F.col(\"PriceChangeDateUTC\"), \"yyyy-MM-dd h:mm:ss a\")) \\\r\n",
 					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\"))"
 				],
-				"execution_count": 19
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -273,7 +286,7 @@
 				"source": [
 					"df1.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_silver\")"
 				],
-				"execution_count": 29
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -297,7 +310,7 @@
 					"SELECT * FROM realtor_lake.listings_silver\r\n",
 					"LIMIT 5"
 				],
-				"execution_count": 32
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
