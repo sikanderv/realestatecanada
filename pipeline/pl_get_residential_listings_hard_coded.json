@@ -103,7 +103,7 @@
 					},
 					"activities": [
 						{
-							"name": "Get Residential Listings-Condo",
+							"name": "Get Residential Listings",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -474,7 +474,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Get Residential Listings-Condo",
+									"activity": "Get Residential Listings",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -538,7 +538,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Get Residential Listings-Condo",
+									"activity": "Get Residential Listings",
 									"dependencyConditions": [
 										"Failed"
 									]
