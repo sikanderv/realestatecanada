@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f1df8766-d935-446d-a9d7-30820748ca4c"
+				"spark.autotune.trackingId": "e0bd7ed6-8ffb-4457-b3bb-2183e949ed47"
 			}
 		},
 		"metadata": {
@@ -88,6 +88,27 @@
 					}
 				},
 				"source": [
+					"from pyspark.sql import functions as F\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"from pyspark.sql.types import *\r\n",
+					"from datetime import datetime, date"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
 					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 				],
@@ -129,7 +150,8 @@
 					"collapsed": false
 				},
 				"source": [
-					"listings_df = spark.read.parquet(raw_container + \"/*/*/*/*\")\r\n",
+					"today = date.today().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
+					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(raw_container + \"/*/*/*/*\")\r\n",
 					"# display(listings_df.limit(5))"
 				],
 				"execution_count": 7
@@ -149,9 +171,6 @@
 					"collapsed": false
 				},
 				"source": [
-					"from pyspark.sql import functions as F\r\n",
-					"from pyspark.sql.functions import col\r\n",
-					"from pyspark.sql.types import *\r\n",
 					"\r\n",
 					"@F.udf\r\n",
 					"def get_datetime(in_string):\r\n",
