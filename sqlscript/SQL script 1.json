@@ -2,7 +2,7 @@
 	"name": "SQL script 1",
 	"properties": {
 		"content": {
-			"query": "SELECT \ncount(1) cnt\n,[source_file]\n,[year]\n,[month]\n,[day]\n FROM [realtor_lake].[dbo].[listings]\n group by\n [source_file]\n,[year]\n,[month]\n,[day]",
+			"query": "SELECT \ncount(1) cnt\n,[source_file]\n,[year]\n,[month]\n,[day]\n, [BuildingType]\n FROM [realtor_lake].[dbo].[listings]\n group by\n [source_file]\n,[year]\n,[month]\n,[day]\n,[BuildingType]",
 			"metadata": {
 				"language": "sql"
 			},
