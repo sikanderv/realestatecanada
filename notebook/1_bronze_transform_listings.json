@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5b0d3542-e0a2-4205-92e0-e13936475131"
+				"spark.autotune.trackingId": "81afce46-adb5-4f96-8551-e6294c75259a"
 			}
 		},
 		"metadata": {
@@ -157,7 +157,7 @@
 				"source": [
 					"# %%sql\r\n",
 					"# SELECT COUNT(1)\r\n",
-					"# FROM realtor_lake.listings"
+					"# FROM realtor_lake.listings .strftime('%Y-%m-%dT%H:%M:%S')"
 				],
 				"execution_count": 4
 			},
@@ -176,11 +176,11 @@
 					"collapsed": false
 				},
 				"source": [
-					"today = date.today().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
-					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(raw_container + \"/*/*/*/*\")\r\n",
-					""
+					"today = F.from_utc_timestamp(date.today().strftime('%Y-%m-%dT%H:%M:%S'), 'America/Edmonton'))\r\n",
+					"print(type(today))\r\n",
+					"print(today)"
 				],
-				"execution_count": 5
+				"execution_count": 54
 			},
 			{
 				"cell_type": "code",
@@ -196,9 +196,10 @@
 					}
 				},
 				"source": [
+					"listings_df = spark.read.option(\"modifiedAfter\", F.lit(today)).parquet(raw_container + \"/*/*/*/*\")\r\n",
 					"print(listings_df.count())"
 				],
-				"execution_count": 7
+				"execution_count": 53
 			},
 			{
 				"cell_type": "code",
@@ -227,7 +228,8 @@
 					"                                .withColumn(\"month\", F.substring(F.col(\"source_file\"), 6, 2)) \\\r\n",
 					"                                .withColumn(\"day\", F.substring(F.col(\"source_file\"), 9, 2))\r\n",
 					"\r\n",
-					"display(year_month_day_df.limit(5))"
+					"#display(year_month_day_df.limit(5))\r\n",
+					"print(year_month_day_df.count())"
 				],
 				"execution_count": 8
 			},
