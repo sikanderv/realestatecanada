@@ -1,5 +1,5 @@
 {
-	"name": "SQL script 1",
+	"name": "listings_by_date_and_building_type",
 	"properties": {
 		"content": {
 			"query": "SELECT \ncount(1) cnt\n,[source_file]\n,[year]\n,[month]\n,[day]\n, [BuildingType]\n FROM [realtor_lake].[dbo].[listings]\n group by\n [source_file]\n,[year]\n,[month]\n,[day]\n,[BuildingType]",
