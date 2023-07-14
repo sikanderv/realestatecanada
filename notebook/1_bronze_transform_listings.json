@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "81afce46-adb5-4f96-8551-e6294c75259a"
+				"spark.autotune.trackingId": "53dd4163-01cc-48b8-b38e-f56bc3d16b26"
 			}
 		},
 		"metadata": {
@@ -96,7 +96,8 @@
 					"from pyspark.sql import functions as F\r\n",
 					"from pyspark.sql.functions import col\r\n",
 					"from pyspark.sql.types import *\r\n",
-					"from datetime import datetime, date"
+					"from datetime import datetime, date\r\n",
+					"from zoneinfo import ZoneInfo"
 				],
 				"execution_count": 1
 			},
@@ -176,11 +177,11 @@
 					"collapsed": false
 				},
 				"source": [
-					"today = F.from_utc_timestamp(date.today().strftime('%Y-%m-%dT%H:%M:%S'), 'America/Edmonton'))\r\n",
-					"print(type(today))\r\n",
-					"print(today)"
+					"today = date.today().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
+					"print(today)\r\n",
+					"print(type(today))"
 				],
-				"execution_count": 54
+				"execution_count": 63
 			},
 			{
 				"cell_type": "code",
@@ -196,10 +197,10 @@
 					}
 				},
 				"source": [
-					"listings_df = spark.read.option(\"modifiedAfter\", F.lit(today)).parquet(raw_container + \"/*/*/*/*\")\r\n",
+					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(raw_container + \"/*/*/*/*\")\r\n",
 					"print(listings_df.count())"
 				],
-				"execution_count": 53
+				"execution_count": 61
 			},
 			{
 				"cell_type": "code",
