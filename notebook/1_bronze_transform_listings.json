@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a769aa89-d0bb-4381-acab-7d7534993258"
+				"spark.autotune.trackingId": "5b0d3542-e0a2-4205-92e0-e13936475131"
 			}
 		},
 		"metadata": {
@@ -58,7 +58,12 @@
 					}
 				},
 				"source": [
-					"## Read all files from the raw layer"
+					"# This notebook performs the following tasks:\r\n",
+					"- #### Reads all files from the 'raw' container in storage, modified on the current day\r\n",
+					"- #### Create year, month, and day columns for partitioning based on the input_file_name()\r\n",
+					"- #### Drop duplicates listings from  the data (this does happen sometimes)\r\n",
+					"- #### Append current date's data to the realtor_lake.listings table\r\n",
+					""
 				]
 			},
 			{
@@ -147,15 +152,12 @@
 							"deleting": false
 						}
 					},
-					"microsoft": {
-						"language": "sparksql"
-					},
 					"collapsed": false
 				},
 				"source": [
-					"%%sql\r\n",
-					"SELECT COUNT(1)\r\n",
-					"FROM realtor_lake.listings"
+					"# %%sql\r\n",
+					"# SELECT COUNT(1)\r\n",
+					"# FROM realtor_lake.listings"
 				],
 				"execution_count": 4
 			},
@@ -213,7 +215,6 @@
 					"collapsed": false
 				},
 				"source": [
-					"\r\n",
 					"@F.udf\r\n",
 					"def get_datetime(in_string):\r\n",
 					"    return in_string.split(\"/\")[-1].split(\"_\")[0]\r\n",
@@ -294,10 +295,10 @@
 				"source": [
 					"drop_duplicates_df = year_month_day_df.dropDuplicates([\"ListingId\", \"MlsNumber\"])\r\n",
 					"distinct_df = year_month_day_df.distinct()\r\n",
-					"display(distinct_df.limit(25))\r\n",
-					"print(\"Total count: \" + str(year_month_day_df.count()))\r\n",
-					"print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
-					"print(\"Distinct count: \" + str(distinct_df.count()))"
+					"# display(distinct_df.limit(25))\r\n",
+					"# print(\"Total count: \" + str(year_month_day_df.count()))\r\n",
+					"# print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
+					"# print(\"Distinct count: \" + str(distinct_df.count()))"
 				],
 				"execution_count": 9
 			},
@@ -375,15 +376,12 @@
 							"deleting": false
 						}
 					},
-					"microsoft": {
-						"language": "sparksql"
-					},
 					"collapsed": false
 				},
 				"source": [
-					"%%sql\r\n",
-					"SELECT COUNT(1)\r\n",
-					"FROM realtor_lake.listings"
+					"# %%sql\r\n",
+					"# SELECT COUNT(1)\r\n",
+					"# FROM realtor_lake.listings"
 				],
 				"execution_count": 12
 			},
