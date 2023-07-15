@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "53dd4163-01cc-48b8-b38e-f56bc3d16b26"
+				"spark.autotune.trackingId": "256ae5dc-4f6e-495f-a443-c3cd7902de97"
 			}
 		},
 		"metadata": {
@@ -99,7 +99,7 @@
 					"from datetime import datetime, date\r\n",
 					"from zoneinfo import ZoneInfo"
 				],
-				"execution_count": 1
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -118,7 +118,7 @@
 					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
 					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 				],
-				"execution_count": 2
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -139,7 +139,7 @@
 					"# df = spark.read.csv('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw')\r\n",
 					"# df.show()"
 				],
-				"execution_count": 3
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -160,7 +160,7 @@
 					"# SELECT COUNT(1)\r\n",
 					"# FROM realtor_lake.listings .strftime('%Y-%m-%dT%H:%M:%S')"
 				],
-				"execution_count": 4
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -178,17 +178,20 @@
 				},
 				"source": [
 					"today = date.today().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
+					"now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
 					"print(today)\r\n",
-					"print(type(today))"
+					"print(type(today))\r\n",
+					"print(now)\r\n",
+					"print(type(now))"
 				],
-				"execution_count": 63
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
 						"source_hidden": false,
-						"outputs_hidden": false
+						"outputs_hidden": true
 					},
 					"nteract": {
 						"transient": {
@@ -197,10 +200,9 @@
 					}
 				},
 				"source": [
-					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(raw_container + \"/*/*/*/*\")\r\n",
-					"print(listings_df.count())"
+					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(raw_container + \"/*/*/*/*\")"
 				],
-				"execution_count": 61
+				"execution_count": 30
 			},
 			{
 				"cell_type": "code",
@@ -232,7 +234,7 @@
 					"#display(year_month_day_df.limit(5))\r\n",
 					"print(year_month_day_df.count())"
 				],
-				"execution_count": 8
+				"execution_count": 31
 			},
 			{
 				"cell_type": "markdown",
@@ -303,7 +305,26 @@
 					"# print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
 					"# print(\"Distinct count: \" + str(distinct_df.count()))"
 				],
-				"execution_count": 9
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"input_file = distinct_df.select(F.col(\"source_file\")).first()[0]\r\n",
+					""
+				],
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
@@ -323,7 +344,7 @@
 					"# year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
 					"distinct_df.write.mode(\"append\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings\")"
 				],
-				"execution_count": 10
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -344,7 +365,7 @@
 					"# ticks = 638229561089970000\r\n",
 					"# print(datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds = ticks //10))"
 				],
-				"execution_count": null
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -365,7 +386,7 @@
 					"# -- DROP TABLE realtor_lake.listings\r\n",
 					"# -- DROP DATABASE realtor_spark"
 				],
-				"execution_count": null
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -386,7 +407,7 @@
 					"# SELECT COUNT(1)\r\n",
 					"# FROM realtor_lake.listings"
 				],
-				"execution_count": 12
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
