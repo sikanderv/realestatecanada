@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "256ae5dc-4f6e-495f-a443-c3cd7902de97"
+				"spark.autotune.trackingId": "736f1554-c3ab-417a-b0d4-349b4025f9a4"
 			}
 		},
 		"metadata": {
@@ -322,9 +322,9 @@
 				},
 				"source": [
 					"input_file = distinct_df.select(F.col(\"source_file\")).first()[0]\r\n",
-					""
+					"spark.sql(\"SELECT * FROM realtor_lake.listings WHERE source_file ={}\".format(input_file))"
 				],
-				"execution_count": 42
+				"execution_count": 43
 			},
 			{
 				"cell_type": "code",
