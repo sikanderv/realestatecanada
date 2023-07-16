@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f69611e7-a37b-470c-837c-35a7ef1694e9"
+				"spark.autotune.trackingId": "872fc0fb-805d-4e23-aab5-37eba56880fe"
 			}
 		},
 		"metadata": {
@@ -97,9 +97,9 @@
 					"from pyspark.sql.functions import col\r\n",
 					"from pyspark.sql.types import *\r\n",
 					"from datetime import datetime, date\r\n",
-					"from zoneinfo import ZoneInfo"
+					"from delta.tables import *"
 				],
-				"execution_count": 15
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -118,7 +118,7 @@
 					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
 					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
 				],
-				"execution_count": 16
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -139,7 +139,7 @@
 					"# df = spark.read.csv('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw')\r\n",
 					"# df.show()"
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -160,7 +160,7 @@
 					"# SELECT COUNT(1)\r\n",
 					"# FROM realtor_lake.listings .strftime('%Y-%m-%dT%H:%M:%S')"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -184,7 +184,7 @@
 					"print(now)\r\n",
 					"print(type(now))"
 				],
-				"execution_count": 17
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -202,7 +202,7 @@
 				"source": [
 					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(raw_container + \"/*/*/*/*\")"
 				],
-				"execution_count": 30
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -234,7 +234,7 @@
 					"#display(year_month_day_df.limit(5))\r\n",
 					"print(year_month_day_df.count())"
 				],
-				"execution_count": 31
+				"execution_count": 7
 			},
 			{
 				"cell_type": "markdown",
@@ -267,7 +267,7 @@
 					"# year_month_day_df.write.mode(\"overwrite\").parquet(stage_container + \"/listings\")\r\n",
 					"# year_month_day_df.write.mode(\"overwrite\").partitionBy(\"Year\", \"Month\", \"Day\").parquet(stage_container + \"/listings\")"
 				],
-				"execution_count": null
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -305,7 +305,7 @@
 					"# print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
 					"# print(\"Distinct count: \" + str(distinct_df.count()))"
 				],
-				"execution_count": 32
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -324,7 +324,28 @@
 					"check_df = distinct_df.select(F.col(\"source_file\"), F.col('BuildingType')).distinct()\r\n",
 					"check_df.show()"
 				],
-				"execution_count": null
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": true
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"for f in check_df.collect():\r\n",
+					"    source_file = f['source_file']\r\n",
+					"    building_type = f['BuildingType']\r\n",
+					"    spark.sql(\"DELETE FROM delta.`synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/` WHERE source_file = '{0}' AND BuildingType = '{1}'\".format(source_file, building_type))"
+				],
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -340,12 +361,9 @@
 					}
 				},
 				"source": [
-					"# for f in check_df.collect():\r\n",
-					"#     source_file = f['source_file']\r\n",
-					"#     building_type = f['BuildingType']\r\n",
-					"#     spark.sql(\"DELETE FROM realtor_lake.listings WHERE source_file = '{0}' AND BuildingType = '{1}'\".format(source_file, building_type))"
+					"deltaTable = DeltaTable.forPath(spark, '/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings')"
 				],
-				"execution_count": null
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -365,7 +383,7 @@
 					"# building_type = distinct_df.select(F.col(\"BuildingType\")).first()[0]\r\n",
 					"# spark.sql(\"SELECT * FROM realtor_lake.listings WHERE source_file ={}\".format(input_file))"
 				],
-				"execution_count": 43
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -406,7 +424,7 @@
 					"# ticks = 638229561089970000\r\n",
 					"# print(datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds = ticks //10))"
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -427,7 +445,7 @@
 					"# -- DROP TABLE realtor_lake.listings\r\n",
 					"# -- DROP DATABASE realtor_spark"
 				],
-				"execution_count": 7
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -448,7 +466,7 @@
 					"# SELECT COUNT(1)\r\n",
 					"# FROM realtor_lake.listings"
 				],
-				"execution_count": 8
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
