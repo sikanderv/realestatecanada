@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "736f1554-c3ab-417a-b0d4-349b4025f9a4"
+				"spark.autotune.trackingId": "f69611e7-a37b-470c-837c-35a7ef1694e9"
 			}
 		},
 		"metadata": {
@@ -321,8 +321,49 @@
 					}
 				},
 				"source": [
-					"input_file = distinct_df.select(F.col(\"source_file\")).first()[0]\r\n",
-					"spark.sql(\"SELECT * FROM realtor_lake.listings WHERE source_file ={}\".format(input_file))"
+					"check_df = distinct_df.select(F.col(\"source_file\"), F.col('BuildingType')).distinct()\r\n",
+					"check_df.show()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# for f in check_df.collect():\r\n",
+					"#     source_file = f['source_file']\r\n",
+					"#     building_type = f['BuildingType']\r\n",
+					"#     spark.sql(\"DELETE FROM realtor_lake.listings WHERE source_file = '{0}' AND BuildingType = '{1}'\".format(source_file, building_type))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# input_file = distinct_df.select(F.col(\"source_file\")).first()[0]\r\n",
+					"# building_type = distinct_df.select(F.col(\"BuildingType\")).first()[0]\r\n",
+					"# spark.sql(\"SELECT * FROM realtor_lake.listings WHERE source_file ={}\".format(input_file))"
 				],
 				"execution_count": 43
 			},
