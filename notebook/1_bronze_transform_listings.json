@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "872fc0fb-805d-4e23-aab5-37eba56880fe"
+				"spark.autotune.trackingId": "9f212526-6bad-477f-b293-01e170245f11"
 			}
 		},
 		"metadata": {
@@ -97,7 +97,8 @@
 					"from pyspark.sql.functions import col\r\n",
 					"from pyspark.sql.types import *\r\n",
 					"from datetime import datetime, date\r\n",
-					"from delta.tables import *"
+					"from delta.tables import *\r\n",
+					"from notebookutils import mssparkutils"
 				],
 				"execution_count": 13
 			},
@@ -179,10 +180,10 @@
 				"source": [
 					"today = date.today().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
 					"now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
-					"print(today)\r\n",
-					"print(type(today))\r\n",
-					"print(now)\r\n",
-					"print(type(now))"
+					"# print(today)\r\n",
+					"# print(type(today))\r\n",
+					"# print(now)\r\n",
+					"# print(type(now))"
 				],
 				"execution_count": 5
 			},
@@ -340,10 +341,10 @@
 					}
 				},
 				"source": [
-					"for f in check_df.collect():\r\n",
-					"    source_file = f['source_file']\r\n",
-					"    building_type = f['BuildingType']\r\n",
-					"    spark.sql(\"DELETE FROM delta.`synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/` WHERE source_file = '{0}' AND BuildingType = '{1}'\".format(source_file, building_type))"
+					"# for f in check_df.collect():\r\n",
+					"#     source_file = f['source_file']\r\n",
+					"#     building_type = f['BuildingType']\r\n",
+					"#     spark.sql(\"DELETE FROM delta.`synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/` WHERE source_file = '{0}' AND BuildingType = '{1}'\".format(source_file, building_type))"
 				],
 				"execution_count": 12
 			},
@@ -361,7 +362,7 @@
 					}
 				},
 				"source": [
-					"deltaTable = DeltaTable.forPath(spark, '/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings')"
+					"# deltaTable = DeltaTable.forPath(spark, '/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings')"
 				],
 				"execution_count": 14
 			},
@@ -381,7 +382,9 @@
 				"source": [
 					"# input_file = distinct_df.select(F.col(\"source_file\")).first()[0]\r\n",
 					"# building_type = distinct_df.select(F.col(\"BuildingType\")).first()[0]\r\n",
-					"# spark.sql(\"SELECT * FROM realtor_lake.listings WHERE source_file ={}\".format(input_file))"
+					"# spark.sql(\"SELECT * FROM realtor_lake.listings WHERE source_file ={}\".format(input_file))\r\n",
+					"# Delete the parquet files from storage\r\n",
+					"mssparkutils.fs.rm('synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/year=2023/month=07/day=15/', True)"
 				],
 				"execution_count": null
 			},
