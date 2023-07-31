@@ -655,26 +655,6 @@
 			}
 		],
 		"parameters": {
-			"p_building_type_id": {
-				"type": "string"
-			},
-			"p_building_type_name": {
-				"type": "string"
-			},
-			"p_building_type_ids": {
-				"type": "array",
-				"defaultValue": [
-					"1",
-					"17"
-				]
-			},
-			"p_building_type_names": {
-				"type": "array",
-				"defaultValue": [
-					"house",
-					"condo"
-				]
-			},
 			"p_building_types": {
 				"type": "array",
 				"defaultValue": [
