@@ -673,6 +673,10 @@
 					"house",
 					"condo"
 				]
+			},
+			"p_building_types": {
+				"type": "array",
+				"defaultValue": "[ { id: \"1\", name: \"house\"},  { id: \"17\", name: \"condo\"} ]"
 			}
 		},
 		"variables": {
