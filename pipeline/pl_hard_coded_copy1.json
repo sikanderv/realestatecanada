@@ -12,7 +12,7 @@
 						"value": "@pipeline().parameters.p_building_types",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Get Listings Metadata-Web",
@@ -104,7 +104,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_empty_folder_if_exists",
+									"referenceName": "pl_empty_folder_if_exists_copy1",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -112,7 +112,8 @@
 									"p_building_type_name": {
 										"value": "@item().name",
 										"type": "Expression"
-									}
+									},
+									"p_building_types": "@item().id"
 								}
 							}
 						}
