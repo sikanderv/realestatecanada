@@ -1,0 +1,90 @@
+{
+	"name": "pl_hard_coded_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach BuildingType",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.p_building_type_ids",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get Listings Metadata-Web",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', item())}",
+									"type": "Expression"
+								},
+								"connectVia": {
+									"referenceName": "AutoResolveIntegrationRuntime",
+									"type": "IntegrationRuntimeReference"
+								},
+								"method": "GET",
+								"headers": {
+									"X-RapidAPI-Key": "d5309c84ebmsh9778152a2a89736p1bad24jsn77dceff0b8aa",
+									"X-RapidAPI-Host": "realty-in-ca1.p.rapidapi.com"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"p_building_type_id": {
+				"type": "string"
+			},
+			"p_building_type_name": {
+				"type": "string"
+			},
+			"p_building_type_ids": {
+				"type": "array",
+				"defaultValue": "[ \"1\", \"17 ]"
+			}
+		},
+		"variables": {
+			"v_number_of_pages": {
+				"type": "String"
+			},
+			"v_number_of_records": {
+				"type": "String"
+			},
+			"v_current_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_initial_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_temp_num_pages": {
+				"type": "String",
+				"defaultValue": "4"
+			},
+			"v_building_type_name": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "pg"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-09T01:13:52Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
