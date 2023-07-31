@@ -112,8 +112,7 @@
 									"p_building_type_name": {
 										"value": "@item().name",
 										"type": "Expression"
-									},
-									"p_building_types": "@item().id"
+									}
 								}
 							}
 						}
