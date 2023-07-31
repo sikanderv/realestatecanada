@@ -20,7 +20,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"building_type_name": {
-								"value": "@pipeline().parameters.p_building_type_name",
+								"value": "@pipeline().parameters.p_building_types['name']",
 								"type": "Expression"
 							}
 						}
@@ -74,7 +74,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"p_ds_building_type_name": {
-											"value": "@pipeline().parameters.p_building_type_name",
+											"value": "@pipeline().parameters.p_building_types['name']",
 											"type": "Expression"
 										}
 									}
@@ -102,6 +102,9 @@
 		"parameters": {
 			"p_building_type_name": {
 				"type": "string"
+			},
+			"p_building_types": {
+				"type": "array"
 			}
 		},
 		"variables": {

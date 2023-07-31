@@ -9,9 +9,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@pipeline().parameters.p_building_type_ids",
+						"value": "@pipeline().parameters.p_building_types",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Get Listings Metadata-Web",
@@ -27,7 +28,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"url": {
-									"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', item())}",
+									"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', item().id)}",
 									"type": "Expression"
 								},
 								"connectVia": {
@@ -607,7 +608,7 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"p_building_type_name": {
-										"value": "@pipeline().parameters.p_building_type_name",
+										"value": "@item().name",
 										"type": "Expression"
 									}
 								}
@@ -676,7 +677,16 @@
 			},
 			"p_building_types": {
 				"type": "array",
-				"defaultValue": "[ { id: \"1\", name: \"house\"},  { id: \"17\", name: \"condo\"} ]"
+				"defaultValue": [
+					{
+						"id": "1",
+						"name": "house"
+					},
+					{
+						"id": "17",
+						"name": "condo"
+					}
+				]
 			}
 		},
 		"variables": {
