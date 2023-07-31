@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d11d89c0-2602-446f-8b41-c602fd9eb704"
+				"spark.autotune.trackingId": "52d265bd-1f31-4c6a-8664-8001d5ea4779"
 			}
 		},
 		"metadata": {
@@ -395,9 +395,11 @@
 					"\r\n",
 					"\r\n",
 					"# You can't call Spark functions on Python strings. You need to use Python string methods, e.g., dataCollect[:3] for first 3 chars\r\n",
+					"v_year = v_source_file[0:4:1]\r\n",
+					"v_month = v_source_file[5:8:1]\r\n",
 					"v_day = v_source_file[8:11:1]\r\n",
 					"print(v_day)\r\n",
-					"folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/year=2023/month=07/day={0}/\".format(v_day)\r\n",
+					"folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
 					"if mssparkutils.fs.exists(folder_path):\r\n",
 					"    mssparkutils.fs.rm(folder_path, True)\r\n",
 					"\r\n",
