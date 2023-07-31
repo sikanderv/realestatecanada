@@ -456,7 +456,7 @@
 													"propertySearchTypeId": "1",
 													"propertyTypeGroupId": "1",
 													"buildingTypeId": {
-														"value": "@pipeline().parameters.p_building_type_id",
+														"value": "@pipeline().parameters.p_building_types['id']",
 														"type": "Expression"
 													}
 												}
@@ -468,7 +468,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"p_ds_building_type_name": {
-														"value": "@pipeline().parameters.p_building_type_name",
+														"value": "@pipeline().parameters.p_building_types['name']",
 														"type": "Expression"
 													}
 												}
