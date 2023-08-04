@@ -140,7 +140,15 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"p_building_type_id": "@item().id",
-									"p_building_type_name": "@item().name"
+									"p_building_type_name": "@item().name",
+									"p_number_of_records": {
+										"value": "@variables('v_number_of_records')",
+										"type": "Expression"
+									},
+									"p_number_of_pages": {
+										"value": "@variables('v_number_of_pages')",
+										"type": "Expression"
+									}
 								}
 							}
 						}
