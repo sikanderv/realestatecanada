@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greaterOrEquals(int(variables('v_current_page')), int(variables('v_number_of_pages')))",
+						"value": "@greaterOrEquals(int(variables('v_current_page')), int(pipeline().parameters.p_number_of_pages))",
 						"type": "Expression"
 					},
 					"activities": [
@@ -494,6 +494,7 @@
 				}
 			}
 		],
+		"concurrency": 1,
 		"parameters": {
 			"p_building_type_id": {
 				"type": "string"
