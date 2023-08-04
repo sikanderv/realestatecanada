@@ -494,7 +494,6 @@
 				}
 			}
 		],
-		"concurrency": 1,
 		"parameters": {
 			"p_building_type_id": {
 				"type": "string"
