@@ -85,7 +85,7 @@
 							"typeProperties": {
 								"variableName": "v_number_of_pages",
 								"value": {
-									"value": "4",
+									"value": "@if(\n    equals(\n            mod(int(variables('v_number_of_records')), 50),\n        0),\n    string(div(int(variables('v_number_of_records')), 50)),\n    string(add(div(int(variables('v_number_of_records')),50), 1))\n)",
 									"type": "Expression"
 								}
 							}
