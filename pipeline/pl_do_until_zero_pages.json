@@ -522,13 +522,6 @@
 			"v_initial_page": {
 				"type": "String",
 				"defaultValue": "1"
-			},
-			"v_temp_num_pages": {
-				"type": "String",
-				"defaultValue": "4"
-			},
-			"v_building_type_name": {
-				"type": "String"
 			}
 		},
 		"folder": {
