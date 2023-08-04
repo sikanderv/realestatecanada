@@ -113,7 +113,34 @@
 										"value": "@item().name",
 										"type": "Expression"
 									},
-									"p_building_type_id": "@item().id"
+									"p_building_type_id": {
+										"value": "@item().id",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Execute DoUntilZeroPages",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Clear Current Day Folder If Exists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_do_until_zero_pages",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_building_type_id": "@item().id",
+									"p_building_type_name": "@item().name"
 								}
 							}
 						}
