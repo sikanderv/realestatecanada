@@ -500,6 +500,14 @@
 			},
 			"p_building_type_name": {
 				"type": "string"
+			},
+			"p_number_of_records": {
+				"type": "string",
+				"defaultValue": "50"
+			},
+			"p_number_of_pages": {
+				"type": "string",
+				"defaultValue": "2"
 			}
 		},
 		"variables": {
