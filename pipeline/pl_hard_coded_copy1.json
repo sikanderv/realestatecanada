@@ -85,7 +85,7 @@
 							"typeProperties": {
 								"variableName": "v_number_of_pages",
 								"value": {
-									"value": "2",
+									"value": "4",
 									"type": "Expression"
 								}
 							}
