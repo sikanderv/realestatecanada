@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a96f0ed9-bfc8-47da-9092-826141bcbdec"
+				"spark.autotune.trackingId": "90942554-d60e-4d46-b165-801a670adb76"
 			}
 		},
 		"metadata": {
@@ -400,7 +400,7 @@
 					"v_month = v_source_file[5:7:1]\r\n",
 					"v_day = v_source_file[8:11:1]\r\n",
 					"print(v_month)\r\n",
-					"folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
+					"folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings_raw/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
 					"if mssparkutils.fs.exists(folder_path):\r\n",
 					"    print(v_year)\r\n",
 					"    mssparkutils.fs.rm(folder_path, True)\r\n",
