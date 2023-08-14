@@ -1,8 +1,8 @@
 {
-	"name": "SQL script 3",
+	"name": "select_all",
 	"properties": {
 		"content": {
-			"query": "SELECT TOP (100) *\n FROM [realtor_lake].[dbo].[listings]\n WHERE [day] = '03' and [month] = '07'",
+			"query": "SELECT  *\nFROM [realtor_lake].[dbo].[listings]\nWHERE [month] = '08' and [day] = '14';",
 			"metadata": {
 				"language": "sql"
 			},

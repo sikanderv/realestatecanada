@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "459ba82d-b48b-43b2-a608-44d9ac37b126"
+				"spark.autotune.trackingId": "7fdd7e4d-05ff-4b20-9c9d-48d812c285c7"
 			}
 		},
 		"metadata": {
@@ -58,7 +58,7 @@
 					}
 				},
 				"source": [
-					"## Read files from realtor_listings (silver ?) table into a df"
+					"## Read files from realtor_lake.listings into a df"
 				]
 			},
 			{
@@ -142,23 +142,9 @@
 				"source": [
 					"listings_raw = spark.sql(\"SELECT * FROM realtor_lake.listings\")\r\n",
 					"# display(listings_raw.limit(50))\r\n",
-					"\r\n",
-					""
+					"listings_raw.show()"
 				],
 				"execution_count": null
-			},
-			{
-				"cell_type": "markdown",
-				"metadata": {
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				]
 			},
 			{
 				"cell_type": "markdown",
