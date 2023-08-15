@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "90942554-d60e-4d46-b165-801a670adb76"
+				"spark.autotune.trackingId": "b2443946-d876-4366-832a-b5fdb89063bf"
 			}
 		},
 		"metadata": {
@@ -116,8 +116,8 @@
 					}
 				},
 				"source": [
-					"raw_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw\"\r\n",
-					"stage_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/stage\""
+					"bronze_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/bronze\"\r\n",
+					"silver_container = \"abfss://realtor@dlsprimarystorage.dfs.core.windows.net/silver\""
 				],
 				"execution_count": 24
 			},
@@ -425,7 +425,7 @@
 				"source": [
 					"spark.sql(\"CREATE DATABASE IF NOT EXISTS realtor_lake\")\r\n",
 					"# year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
-					"distinct_df.write.mode(\"append\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings\")"
+					"distinct_df.write.mode(\"append\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_raw\")"
 				],
 				"execution_count": 53
 			},
