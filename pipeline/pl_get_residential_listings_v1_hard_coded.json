@@ -1,0 +1,246 @@
+{
+	"name": "pl_get_residential_listings_v1_hard_coded",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach BuildingType",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.p_building_types",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get Listings Metadata-Web",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "@{concat('https://realty-in-ca1.p.rapidapi.com/', 'properties/list-residential?LatitudeMax=', '51.43835', '&LatitudeMin=','50.61436', '&LongitudeMax=', '-112.62848', '&LongitudeMin=', '-115.54536', '&CurrentPage=', '1', '&RecordsPerPage=', '50', '&SortOrder=', 'A', '&SortBy=', '6', 'TransactionTypeId=', '2', '&PropertySearchTypeId=', '1', '&PropertyTypeGroupId=', '1', '&BuildingTypeId=', item().id)}",
+									"type": "Expression"
+								},
+								"connectVia": {
+									"referenceName": "AutoResolveIntegrationRuntime",
+									"type": "IntegrationRuntimeReference"
+								},
+								"method": "GET",
+								"headers": {
+									"X-RapidAPI-Key": "d5309c84ebmsh9778152a2a89736p1bad24jsn77dceff0b8aa",
+									"X-RapidAPI-Host": "realty-in-ca1.p.rapidapi.com"
+								}
+							}
+						},
+						{
+							"name": "Set NumberOfRecords",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get Listings Metadata-Web",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_number_of_records",
+								"value": {
+									"value": "@replace(string(activity('Get Listings Metadata-Web').output.Paging.TotalRecords), ': ','')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set NumberofPages",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set NumberOfRecords",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_number_of_pages",
+								"value": {
+									"value": "3",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Clear Current Day Folder If Exists",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Set NumberofPages",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_empty_folder_if_exists_copy1",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_building_type_name": {
+										"value": "@item().name",
+										"type": "Expression"
+									},
+									"p_building_type_id": {
+										"value": "@item().id",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Execute DoUntilZeroPages",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Clear Current Day Folder If Exists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_do_until_zero_pages",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"p_building_type_id": {
+										"value": "@item().id",
+										"type": "Expression"
+									},
+									"p_building_type_name": {
+										"value": "@item().name",
+										"type": "Expression"
+									},
+									"p_number_of_records": {
+										"value": "@variables('v_number_of_records')",
+										"type": "Expression"
+									},
+									"p_number_of_pages": {
+										"value": "@variables('v_number_of_pages')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Populate Realtor Lake-Bronze",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "ForEach BuildingType",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "1_bronze_transform_listings",
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": false
+					},
+					"driverSize": "Small"
+				}
+			}
+		],
+		"parameters": {
+			"p_building_types": {
+				"type": "array",
+				"defaultValue": [
+					{
+						"id": "1",
+						"name": "house"
+					},
+					{
+						"id": "17",
+						"name": "condo"
+					}
+				]
+			}
+		},
+		"variables": {
+			"v_number_of_pages": {
+				"type": "String"
+			},
+			"v_number_of_records": {
+				"type": "String"
+			},
+			"v_current_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_initial_page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"v_temp_num_pages": {
+				"type": "String",
+				"defaultValue": "4"
+			},
+			"v_building_type_name": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "main"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-09T01:13:52Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
