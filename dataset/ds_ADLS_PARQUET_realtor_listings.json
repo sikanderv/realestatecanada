@@ -21,7 +21,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat('raw/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'yyyy'), '/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'MM'), '/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'dd'), '/', dataset().p_ds_building_type_name)",
+					"value": "@concat('bronze/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'yyyy'), '/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'MM'), '/', formatDateTime(convertFromUtc(utcNow(), 'Mountain Standard Time'),'dd'), '/', dataset().p_ds_building_type_name)",
 					"type": "Expression"
 				},
 				"fileSystem": "realtor"
