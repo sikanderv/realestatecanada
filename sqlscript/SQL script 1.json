@@ -1,8 +1,8 @@
 {
-	"name": "select_all",
+	"name": "SQL script 1",
 	"properties": {
 		"content": {
-			"query": "SELECT *\nFROM \n(\nSELECT  ListingId, source_file, count(1) cnt\nFROM [realtor_lake].[dbo].[listings_bronze]\ngroup by ListingId, source_file\n) t\nWHERE T.cnt > 1;",
+			"query": "SELECT DISTINCT source_file FROM [realtor_lake].[dbo].[test]",
 			"metadata": {
 				"language": "sql"
 			},

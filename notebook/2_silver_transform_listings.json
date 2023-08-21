@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "82253f41-325a-429e-9ba4-97416ffd60c1"
+				"spark.autotune.trackingId": "13cabb81-c63f-4629-8366-23aec8d35d74"
 			}
 		},
 		"metadata": {
@@ -80,7 +80,7 @@
 					"# df = spark.read.csv('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw')\r\n",
 					"# df.show()"
 				],
-				"execution_count": 3
+				"execution_count": 64
 			},
 			{
 				"cell_type": "code",
@@ -103,7 +103,7 @@
 					"from delta.tables import DeltaTable\r\n",
 					"import datetime"
 				],
-				"execution_count": 20
+				"execution_count": 65
 			},
 			{
 				"cell_type": "code",
@@ -124,14 +124,15 @@
 					"table_name = 'listings_silver'\r\n",
 					"delta_table_path = data_lake_container + '/' + silver_folder + '/' + table_name\r\n",
 					"\r\n",
-					"key_columns_str = 'ListingId'\r\n",
+					"key_columns_str = 'ListingId,source_file'\r\n",
 					"# Convert comma separated string with keys to array\r\n",
 					"key_columns = key_columns_str.split(',')\r\n",
 					"\r\n",
 					"# Convert array with keys to where-clause for merge statement\r\n",
-					"conditions_list = [f\"existing.{key}=updates.{key}\" for key in key_columns]"
+					"conditions_list = [f\"existing.{key}=updates.{key}\" for key in key_columns]\r\n",
+					"print(conditions_list)"
 				],
-				"execution_count": 6
+				"execution_count": 66
 			},
 			{
 				"cell_type": "code",
@@ -153,7 +154,7 @@
 					"# listings_df = spark.read.parquet(raw_container + \"/*/*/*/*/\")\r\n",
 					"# display(listings_df.limit(1))"
 				],
-				"execution_count": 7
+				"execution_count": 67
 			},
 			{
 				"cell_type": "code",
@@ -171,9 +172,9 @@
 				"source": [
 					"listings_raw = spark.sql(\"SELECT * FROM realtor_lake.listings_bronze\")\r\n",
 					"# display(listings_raw.limit(50))\r\n",
-					"listings_raw.show()"
+					"listings_raw.select(F.col('source_file')).distinct().show()"
 				],
-				"execution_count": 14
+				"execution_count": 68
 			},
 			{
 				"cell_type": "markdown",
@@ -207,7 +208,7 @@
 					"                                )\r\n",
 					"# df.select(F.col(\"ListingInsertedMicroSecondsValue\")).show()"
 				],
-				"execution_count": 15
+				"execution_count": 69
 			},
 			{
 				"cell_type": "markdown",
@@ -245,7 +246,7 @@
 					"#df1 = df.withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\"))\r\n",
 					"# df1.select(F.col(\"ListingInsertedTimestampUTC\")).show()"
 				],
-				"execution_count": 16
+				"execution_count": 70
 			},
 			{
 				"cell_type": "markdown",
@@ -281,9 +282,11 @@
 					"        .withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\")) \\\r\n",
 					"        .withColumn(\"ListingInsertedDateMT\", F.from_utc_timestamp(F.col(\"ListingInsertedTimestampUTC\"), \"America/Edmonton\")) \\\r\n",
 					"        .withColumn(\"PriceChangeDateTimeStampUTC\", F.to_timestamp(F.col(\"PriceChangeDateUTC\"), \"yyyy-MM-dd h:mm:ss a\")) \\\r\n",
-					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\"))"
+					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\"))\r\n",
+					"\r\n",
+					"# sdf.select(F.col(\"source_file\"), F.col(\"ListingId\")).distinct().show()"
 				],
-				"execution_count": 17
+				"execution_count": 71
 			},
 			{
 				"cell_type": "code",
@@ -301,7 +304,7 @@
 				"source": [
 					"# df1.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_silver\")"
 				],
-				"execution_count": 18
+				"execution_count": 72
 			},
 			{
 				"cell_type": "code",
@@ -326,7 +329,7 @@
 					"    # Merge new data into existing table\r\n",
 					"    delta_table.alias(\"existing\").merge(\r\n",
 					"        source = sdf.alias(\"updates\"),\r\n",
-					"        condition = \" AND \".join(conditions_list)\r\n",
+					"        condition = \"existing.ListingId=updates.ListingId and existing.source_file=updates.source_file\"\r\n",
 					"         \r\n",
 					"    ).whenMatchedUpdateAll(\r\n",
 					"    ).whenNotMatchedInsertAll(\r\n",
@@ -340,7 +343,31 @@
 					"    # Create new delta table with new data\r\n",
 					"    sdf.write.format('delta').save(delta_table_path)"
 				],
-				"execution_count": 21
+				"execution_count": 73
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Adding the Delta Table to the Delta Database for easy querying in other notebooks or scripts within Synapse.\r\n",
+					"spark.sql(f'CREATE TABLE IF NOT EXISTS realtor_lake.{table_name} USING DELTA LOCATION \\'{delta_table_path}\\'')\r\n",
+					" \r\n",
+					"# # Spark SQL version\r\n",
+					"# CREATE TABLE Silver.MyTable\r\n",
+					"# USING DELTA\r\n",
+					"# LOCATION 'abfss://yourcontainer@yourdatalake.dfs.core.windows.net/Silver/MyTable'"
+				],
+				"execution_count": 74
 			},
 			{
 				"cell_type": "code",
@@ -361,10 +388,10 @@
 				},
 				"source": [
 					"%%sql\r\n",
-					"SELECT * FROM realtor_lake.listings_silver\r\n",
-					"LIMIT 5"
+					"SELECT distinct source_file FROM realtor_lake.listings_silver\r\n",
+					"--LIMIT 5"
 				],
-				"execution_count": 22
+				"execution_count": 75
 			},
 			{
 				"cell_type": "markdown",
