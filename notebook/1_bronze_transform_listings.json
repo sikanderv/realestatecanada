@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b7981db3-19e8-473d-b072-43470fedb375"
+				"spark.autotune.trackingId": "e32abf90-eb68-481f-8db9-a4000ab274a7"
 			}
 		},
 		"metadata": {
@@ -204,10 +204,10 @@
 				},
 				"source": [
 					"# Read listing MODIFIED TODAY only\r\n",
-					"# listings_df = spark.read.option(\"modifiedAfter\", today).parquet(bronze_container + \"/*/*/*/*\")\r\n",
+					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(bronze_container + \"/*/*/*/*\")\r\n",
 					"\r\n",
 					"# Read ALL listings\r\n",
-					"listings_df = spark.read.parquet(bronze_container + \"/*/*/*/*\")"
+					"# listings_df = spark.read.parquet(bronze_container + \"/*/*/*/*\")"
 				],
 				"execution_count": 6
 			},
