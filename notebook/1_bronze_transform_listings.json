@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4ac76acf-cc8b-48f5-b042-90ebd0471d8f"
+				"spark.autotune.trackingId": "bc0fd3a9-b42e-485c-8bc1-784f1046411e"
 			}
 		},
 		"metadata": {
@@ -179,9 +179,11 @@
 				},
 				"source": [
 					"today = date.today().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
-					"now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
 					"print(today)\r\n",
 					"print(type(today))\r\n",
+					"\r\n",
+					"\r\n",
+					"now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')\r\n",
 					"print(now)\r\n",
 					"print(type(now))"
 				],
@@ -201,8 +203,11 @@
 					}
 				},
 				"source": [
+					"# Read listing MODIFIED TODAY only\r\n",
 					"# listings_df = spark.read.option(\"modifiedAfter\", today).parquet(bronze_container + \"/*/*/*/*\")\r\n",
-					"listings_df = spark.read.parquet(bronze_container + \"/*/*/*/*\")"
+					"\r\n",
+					"# Read ALL listings\r\n",
+					"# listings_df = spark.read.parquet(bronze_container + \"/*/*/*/*\")"
 				],
 				"execution_count": 6
 			},
