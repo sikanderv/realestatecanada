@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b77f9b12-6f69-40b0-98ff-ee7c84142d66"
+				"spark.autotune.trackingId": "53bc7858-536f-44d2-836d-ef22d50ee369"
 			}
 		},
 		"metadata": {
@@ -333,7 +333,7 @@
 				},
 				"source": [
 					"check_df = distinct_df.select(F.col(\"source_file\"), F.col('BuildingType')).distinct()\r\n",
-					"check_df.show()"
+					"# check_df.show()"
 				],
 				"execution_count": 141
 			},
@@ -500,19 +500,16 @@
 							"deleting": false
 						}
 					},
-					"microsoft": {
-						"language": "sparksql"
-					},
 					"collapsed": false
 				},
 				"source": [
-					"%%sql\r\n",
-					"SELECT \r\n",
-					" source_file, BuildingType, COUNT(1) cnt\r\n",
-					"FROM realtor_lake.listings_bronze\r\n",
-					"GROUP BY source_file, BuildingType\r\n",
-					"ORDER BY source_file DESC, BuildingType ASC\r\n",
-					";"
+					"# %%sql\r\n",
+					"# SELECT \r\n",
+					"# source_file, BuildingType, COUNT(1) cnt\r\n",
+					"# FROM realtor_lake.listings_bronze\r\n",
+					"# GROUP BY source_file, BuildingType\r\n",
+					"# ORDER BY source_file DESC, BuildingType ASC\r\n",
+					"# ;"
 				],
 				"execution_count": 148
 			},
