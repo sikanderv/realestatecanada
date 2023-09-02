@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "12e81f65-b4de-478e-bda4-b7e9ab220a7e"
+				"spark.autotune.trackingId": "f3c8a886-9a01-404b-9999-d12c9b25c893"
 			}
 		},
 		"metadata": {
@@ -207,7 +207,7 @@
 					"listings_df = spark.read.option(\"modifiedAfter\", today).parquet(bronze_container + \"/*/*/*/*\")\r\n",
 					"\r\n",
 					"# Read ALL listings\r\n",
-					"# listings_df = spark.read.parquet(bronze_container + \"/*/*/*/*\")"
+					"listings_df = spark.read.parquet(bronze_container + \"/*/*/*/*\")"
 				],
 				"execution_count": 100
 			},
@@ -413,7 +413,7 @@
 					"    print(v_day)\r\n",
 					"\r\n",
 					"    # Delete today's files if exists (.rm method)\r\n",
-					"    folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings_bronze_new/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
+					"    folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings_bronze/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
 					"    if mssparkutils.fs.exists(folder_path):\r\n",
 					"        # print(v_year)\r\n",
 					"        mssparkutils.fs.rm(folder_path, True)\r\n",
@@ -437,7 +437,7 @@
 				"source": [
 					"spark.sql(\"CREATE DATABASE IF NOT EXISTS realtor_lake\")\r\n",
 					"# year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
-					"distinct_df.write.mode(\"append\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_bronze_new\")"
+					"distinct_df.write.mode(\"append\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_bronze\")"
 				],
 				"execution_count": 108
 			},
@@ -509,12 +509,30 @@
 					"%%sql\r\n",
 					"SELECT \r\n",
 					" source_file, BuildingType, COUNT(1) cnt\r\n",
-					"FROM realtor_lake.listings_bronze_new\r\n",
+					"FROM realtor_lake.listings_bronze\r\n",
 					"GROUP BY source_file, BuildingType\r\n",
 					"ORDER BY source_file DESC, BuildingType ASC\r\n",
 					";"
 				],
 				"execution_count": 111
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# spark.sql(\"DROP TABLE IF EXISTS realtor_lake.listings_bronze_new\")"
+				],
+				"execution_count": 112
 			},
 			{
 				"cell_type": "markdown",
