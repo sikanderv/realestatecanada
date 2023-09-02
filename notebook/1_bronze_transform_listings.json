@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "881fdd75-e685-44a1-a8c9-d664a645d686"
+				"spark.autotune.trackingId": "cd5e81c8-972d-4bcf-bddb-71768056e7bc"
 			}
 		},
 		"metadata": {
@@ -438,7 +438,7 @@
 					"# year_month_day_df.write.mode(\"overwrite\").saveAsTable(\"realtor_spark.listings\")\r\n",
 					"distinct_df.write.mode(\"append\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_bronze_new\")"
 				],
-				"execution_count": null
+				"execution_count": 31
 			},
 			{
 				"cell_type": "code",
@@ -459,7 +459,7 @@
 					"# ticks = 638229561089970000\r\n",
 					"# print(datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds = ticks //10))"
 				],
-				"execution_count": null
+				"execution_count": 32
 			},
 			{
 				"cell_type": "code",
@@ -485,7 +485,7 @@
 					"#  DROP TABLE realtor_lake.listings\r\n",
 					"#  DROP DATABASE realtor_spark"
 				],
-				"execution_count": null
+				"execution_count": 33
 			},
 			{
 				"cell_type": "code",
@@ -506,10 +506,14 @@
 				},
 				"source": [
 					"%%sql\r\n",
-					"SELECT *\r\n",
-					"FROM realtor_lake.listings_bronze_new"
+					"SELECT \r\n",
+					" source_file, BuildingType, COUNT(1) cnt\r\n",
+					"FROM [realtor_lake].[dbo].[listings_bronze_new]\r\n",
+					"GROUP BY source_file, BuildingType\r\n",
+					"ORDER BY source_file DESC, BuildingType ASC\r\n",
+					";"
 				],
-				"execution_count": null
+				"execution_count": 34
 			},
 			{
 				"cell_type": "markdown",
