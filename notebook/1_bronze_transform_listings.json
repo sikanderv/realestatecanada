@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "cd5e81c8-972d-4bcf-bddb-71768056e7bc"
+				"spark.autotune.trackingId": "58f37978-95dd-494a-aa15-98d1ca1e750e"
 			}
 		},
 		"metadata": {
@@ -394,28 +394,27 @@
 					}
 				},
 				"source": [
-					"# # Temp workaround without delta tables: Delete the files related to the dates from the Synapse workspace folder in ADLS\r\n",
-					"# # Example:  folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
+					"# Temp workaround without delta tables: Delete the files related to the dates from the Synapse workspace folder in ADLS\r\n",
+					"# Example:  folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
 					"\r\n",
-					"# # Delete the parquet files from storage\r\n",
+					"# Delete the parquet files from storage\r\n",
 					"\r\n",
-					"# for f in check_df.collect():\r\n",
-					"#     v_source_file = f['source_file']\r\n",
-					"#     v_building_type = f['BuildingType']\r\n",
+					"for f in check_df.collect():\r\n",
+					"    v_source_file = f['source_file']\r\n",
+					"    v_building_type = f['BuildingType']\r\n",
 					"\r\n",
 					"\r\n",
-					"# # You can't call Spark functions on Python strings. You need to use Python string methods, e.g., dataCollect[:3] for first 3 chars\r\n",
-					"# v_year = v_source_file[:4]\r\n",
-					"# v_month = v_source_file[5:7:1]\r\n",
-					"# v_day = v_source_file[8:11:1]\r\n",
-					"# print(v_month)\r\n",
+					"# You can't call Spark functions on Python strings. You need to use Python string methods, e.g., dataCollect[:3] for first 3 chars\r\n",
+					"v_year = v_source_file[:4]\r\n",
+					"v_month = v_source_file[5:7:1]\r\n",
+					"v_day = v_source_file[8:11:1]\r\n",
+					"print(v_month)\r\n",
 					"\r\n",
-					"# # Delete today's files if exists (.rm method)\r\n",
-					"# folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings_bronze/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
-					"# if mssparkutils.fs.exists(folder_path):\r\n",
-					"#     print(v_year)\r\n",
-					"#     mssparkutils.fs.rm(folder_path, True)\r\n",
-					"\r\n",
+					"# Delete today's files if exists (.rm method)\r\n",
+					"folder_path = \"/synapse/workspaces/ws-primary/warehouse/realtor_lake.db/listings_bronze/year={0}/month={1}/day={2}/\".format(v_year, v_month, v_day)\r\n",
+					"if mssparkutils.fs.exists(folder_path):\r\n",
+					"    print(v_year)\r\n",
+					"    mssparkutils.fs.rm(folder_path, True)\r\n",
 					""
 				],
 				"execution_count": 30
