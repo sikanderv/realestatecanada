@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "487d039e-be7b-49f7-bb94-877b63ceb3e9"
+				"spark.autotune.trackingId": "3b34ff08-4b20-435b-b80c-9223fea3a468"
 			}
 		},
 		"metadata": {
@@ -308,12 +308,13 @@
 					"collapsed": false
 				},
 				"source": [
-					"drop_duplicates_df = year_month_day_df.dropDuplicates([\"ListingId\", \"MlsNumber\"])\r\n",
+					"drop_duplicates_df = year_month_day_df.dropDuplicates([\"ListingId\", \"MlsNumber\", \"source_file\"])\r\n",
 					"distinct_df = year_month_day_df.distinct()\r\n",
+					"\r\n",
 					"# display(distinct_df.limit(25))\r\n",
-					"# print(\"Total count: \" + str(year_month_day_df.count()))\r\n",
-					"# print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
-					"# print(\"Distinct count: \" + str(distinct_df.count()))"
+					"print(\"Total count: \" + str(year_month_day_df.count()))\r\n",
+					"print(\"Dropped duplicate count: \" + str(drop_duplicates_df.count()))\r\n",
+					"print(\"Distinct count: \" + str(distinct_df.count()))"
 				],
 				"execution_count": 10
 			},
