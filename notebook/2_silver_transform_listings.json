@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3271c2c5-2d4f-42bf-8a51-de6a7598b2df"
+				"spark.autotune.trackingId": "33306d15-9c57-4cb9-8b22-3be044bdf7a6"
 			}
 		},
 		"metadata": {
@@ -167,14 +167,15 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"listings_raw = spark.sql(\"SELECT * FROM realtor_lake.listings_bronze\")\r\n",
-					"# display(listings_raw.limit(50))\r\n",
-					"listings_raw.select(F.col('source_file')).distinct().show()"
+					"display(listings_raw.limit(10))\r\n",
+					"#listings_raw.select(F.col('source_file')).distinct().show()"
 				],
-				"execution_count": 18
+				"execution_count": 29
 			},
 			{
 				"cell_type": "markdown",
