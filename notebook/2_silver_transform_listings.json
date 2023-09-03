@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3992db7a-2e5f-4433-906b-15f2bfeffc07"
+				"spark.autotune.trackingId": "d26d7d04-1c34-4783-bd46-9a03bcb4d5ab"
 			}
 		},
 		"metadata": {
@@ -409,7 +409,7 @@
 				},
 				"source": [
 					"# Adding the Delta Table to the Delta Database for easy querying in other notebooks or scripts within Synapse.\r\n",
-					"spark.sql('CREATE TABLE IF NOT EXISTS realtor_lake.control_table(lastETLLoad, datetime)')"
+					"# spark.sql('CREATE TABLE IF NOT EXISTS realtor_lake.control_table(lastETLLoad, datetime)')"
 				],
 				"execution_count": 27
 			},
