@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "ce618ab9-0939-4017-9fec-e36572fa492e"
+				"spark.autotune.trackingId": "3992db7a-2e5f-4433-906b-15f2bfeffc07"
 			}
 		},
 		"metadata": {
@@ -80,7 +80,7 @@
 					"# df = spark.read.csv('abfss://realtor@dlsprimarystorage.dfs.core.windows.net/raw')\r\n",
 					"# df.show()"
 				],
-				"execution_count": 1
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -103,7 +103,7 @@
 					"from delta.tables import DeltaTable\r\n",
 					"import datetime"
 				],
-				"execution_count": 2
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -132,7 +132,7 @@
 					"conditions_list = [f\"existing.{key}=updates.{key}\" for key in key_columns]\r\n",
 					"print(conditions_list)"
 				],
-				"execution_count": 3
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -154,7 +154,7 @@
 					"# listings_df = spark.read.parquet(raw_container + \"/*/*/*/*/\")\r\n",
 					"# display(listings_df.limit(1))"
 				],
-				"execution_count": 4
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -174,7 +174,7 @@
 					"# display(listings_raw.limit(50))\r\n",
 					"listings_raw.select(F.col('source_file')).distinct().show()"
 				],
-				"execution_count": 5
+				"execution_count": 18
 			},
 			{
 				"cell_type": "markdown",
@@ -206,9 +206,9 @@
 					"df = listings_raw.withColumn(\"ListingInsertedMicroSecondsValue\",\r\n",
 					"                                F.floor(listings_raw.ListingInsertedDateUTC.cast(LongType()) / 10)\r\n",
 					"                                )\r\n",
-					"# df.select(F.col(\"ListingInsertedMicroSecondsValue\")).show()"
+					"df.select(F.col(\"last_modified_time\")).show()"
 				],
-				"execution_count": 6
+				"execution_count": 19
 			},
 			{
 				"cell_type": "markdown",
@@ -246,7 +246,7 @@
 					"#df1 = df.withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\"))\r\n",
 					"# df1.select(F.col(\"ListingInsertedTimestampUTC\")).show()"
 				],
-				"execution_count": 7
+				"execution_count": 20
 			},
 			{
 				"cell_type": "markdown",
@@ -282,11 +282,12 @@
 					"        .withColumn(\"ListingInsertedTimestampUTC\",var_f_time_conversion(\"ListingInsertedMicroSecondsValue\")) \\\r\n",
 					"        .withColumn(\"ListingInsertedDateMT\", F.from_utc_timestamp(F.col(\"ListingInsertedTimestampUTC\"), \"America/Edmonton\")) \\\r\n",
 					"        .withColumn(\"PriceChangeDateTimeStampUTC\", F.to_timestamp(F.col(\"PriceChangeDateUTC\"), \"yyyy-MM-dd h:mm:ss a\")) \\\r\n",
-					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\"))\r\n",
+					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\")) \\\r\n",
+					"        .withColumn(\"LastETLRun\", F.to_timestamp(F.col(\"last_modified_time\"), \"yyyy-MM-dd h:mm:ss a\"))\r\n",
 					"\r\n",
 					"# sdf.select(F.col(\"source_file\"), F.col(\"ListingId\")).distinct().show()"
 				],
-				"execution_count": 8
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -304,7 +305,7 @@
 				"source": [
 					"# df1.write.mode(\"overwrite\").partitionBy(\"year\", \"month\", \"day\").saveAsTable(\"realtor_lake.listings_silver\")"
 				],
-				"execution_count": 9
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -343,7 +344,7 @@
 					"    # Create new delta table with new data\r\n",
 					"    sdf.write.format('delta').save(delta_table_path)"
 				],
-				"execution_count": 10
+				"execution_count": 24
 			},
 			{
 				"cell_type": "code",
@@ -367,7 +368,7 @@
 					"# USING DELTA\r\n",
 					"# LOCATION 'abfss://yourcontainer@yourdatalake.dfs.core.windows.net/Silver/MyTable'"
 				],
-				"execution_count": 11
+				"execution_count": 25
 			},
 			{
 				"cell_type": "code",
@@ -391,7 +392,7 @@
 					"SELECT distinct source_file FROM realtor_lake.listings_silver\r\n",
 					"--LIMIT 5"
 				],
-				"execution_count": 12
+				"execution_count": 26
 			},
 			{
 				"cell_type": "code",
@@ -410,7 +411,7 @@
 					"# Adding the Delta Table to the Delta Database for easy querying in other notebooks or scripts within Synapse.\r\n",
 					"spark.sql('CREATE TABLE IF NOT EXISTS realtor_lake.control_table(lastETLLoad, datetime)')"
 				],
-				"execution_count": null
+				"execution_count": 27
 			},
 			{
 				"cell_type": "markdown",
