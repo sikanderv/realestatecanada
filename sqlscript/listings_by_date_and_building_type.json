@@ -2,7 +2,7 @@
 	"name": "listings_by_date_and_building_type",
 	"properties": {
 		"content": {
-			"query": "SELECT \n source_file, BuildingType, COUNT(1) cnt\nFROM [realtor_lake].[dbo].[listings_bronze]\n--WHERE [source_file] = '2023-08-26'\n--   and buildingtype = 'House'\nGROUP BY source_file, BuildingType\nORDER BY source_file DESC, BuildingType ASC\n ;\n\nSELECT TOP 10\n last_modified_time, PriceChangeDateUTC\nFROM [realtor_lake].[dbo].[listings_bronze];\n\nSELECT \n source_file, BuildingType, COUNT(1) cnt\nFROM [realtor_lake].[dbo].[listings_silver]\n--WHERE [source_file] = '2023-08-26' and buildingtype = 'House'\nGROUP BY source_file, BuildingType\nORDER BY source_file DESC, BuildingType ASC\n ;\n\nSELECT TOP 10 *\nFROM [realtor_lake].[dbo].[listings_silver];\n-- DELETE FROM [realtor_lake].[dbo].[listings]\n-- WHERE [source_file] = '2023-07-14';",
+			"query": "SELECT \n source_file, BuildingType, COUNT(1) cnt\nFROM [realtor_lake].[dbo].[listings_bronze]\n--WHERE [source_file] = '2023-08-26'\n--   and buildingtype = 'House'\nGROUP BY source_file, BuildingType\nORDER BY source_file DESC, BuildingType ASC\n ;\n\nSELECT TOP 10\n last_modified_time, PriceChangeDateUTC\nFROM [realtor_lake].[dbo].[listings_bronze];\n\nSELECT \n source_file, BuildingType, COUNT(1) cnt\nFROM [realtor_lake].[dbo].[listings_silver]\n--WHERE [source_file] = '2023-08-26' and buildingtype = 'House'\nGROUP BY source_file, BuildingType\nORDER BY source_file DESC, BuildingType ASC\n ;\n\nSELECT TOP 100 *\nFROM [realtor_lake].[dbo].[listings_silver];\n-- DELETE FROM [realtor_lake].[dbo].[listings]\n-- WHERE [source_file] = '2023-07-14';",
 			"metadata": {
 				"language": "sql"
 			},
