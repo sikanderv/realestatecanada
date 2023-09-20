@@ -162,7 +162,7 @@
 				}
 			},
 			{
-				"name": "Populate Realtor Lake-Bronze",
+				"name": "Populate Bronze Layer",
 				"type": "SynapseNotebook",
 				"dependsOn": [
 					{
@@ -183,6 +183,42 @@
 				"typeProperties": {
 					"notebook": {
 						"referenceName": "1_bronze_transform_listings",
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sparkpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": false
+					},
+					"driverSize": "Small"
+				}
+			},
+			{
+				"name": "Populate Silver Layer",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "Populate Bronze Layer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "2_silver_transform_listings",
 						"type": "NotebookReference"
 					},
 					"snapshot": true,
