@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Web1",
+				"name": "RefreshPowerBI",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -24,6 +24,10 @@
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "POST",
+					"body": {
+						"value": "@concat('{', '\"applyRefreshPolicy\":\"false\", \"retryCount\":\"0\"', '}')",
+						"type": "Expression"
+					},
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://analysis.windows.net/powerbi/api"
