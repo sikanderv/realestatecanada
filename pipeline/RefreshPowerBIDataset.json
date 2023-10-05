@@ -38,11 +38,11 @@
 		"parameters": {
 			"WorkspaceGuidId": {
 				"type": "string",
-				"defaultValue": "d8e57500-ac6e-4aec-82b7-2e126c2ed308"
+				"defaultValue": "44e94c57-91e8-429a-8666-c9eb8e7f2946"
 			},
 			"DatasetGuidId": {
 				"type": "string",
-				"defaultValue": "e39c06a5-7a18-40ba-bae1-f6f2dcd889ab"
+				"defaultValue": "3817282a-68b6-47e6-a01e-aadfd9d8ad59"
 			}
 		},
 		"annotations": []
