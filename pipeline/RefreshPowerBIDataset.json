@@ -29,8 +29,19 @@
 						"type": "Expression"
 					},
 					"authentication": {
-						"type": "MSI",
-						"resource": "https://analysis.windows.net/powerbi/api"
+						"type": "ServicePrincipal",
+						"userTenant": "b6fb90ff-ad06-4449-8ab3-7c352e6a3dcf",
+						"username": "b9626b72-455f-4319-acdf-9358d4535e64",
+						"resource": "https://analysis.windows.net/powerbi/api",
+						"password": {
+							"type": "AzureKeyVaultSecret",
+							"store": {
+								"referenceName": "AzureKeyVault1",
+								"type": "LinkedServiceReference"
+							},
+							"secretName": "kv-synapse-pbi-secret",
+							"secretVersion": "8774670d5cfb4616b4bd0b0b19629303"
+						}
 					}
 				}
 			}
