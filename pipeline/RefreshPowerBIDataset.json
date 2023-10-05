@@ -24,6 +24,9 @@
 						"type": "IntegrationRuntimeReference"
 					},
 					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
 					"body": {
 						"value": "@concat('{', '\"applyRefreshPolicy\":\"false\", \"retryCount\":\"0\"', '}')",
 						"type": "Expression"
