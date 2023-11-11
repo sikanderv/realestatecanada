@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "cb2b2228-3169-4e8f-b8f8-cda7fc339fd8"
+				"spark.autotune.trackingId": "fa04dbad-bbe6-4730-b13b-7f1b80fb6442"
 			}
 		},
 		"metadata": {
@@ -98,7 +98,7 @@
 				},
 				"source": [
 					"from pyspark.sql import functions as F\r\n",
-					"from pyspark.sql.functions import col\r\n",
+					"from pyspark.sql.functions import col, sha2\r\n",
 					"from pyspark.sql.types import *\r\n",
 					"from delta.tables import DeltaTable\r\n",
 					"import datetime"
@@ -284,7 +284,8 @@
 					"        .withColumn(\"ListingInsertedDateMT\", F.from_utc_timestamp(F.col(\"ListingInsertedTimestampUTC\"), \"America/Edmonton\")) \\\r\n",
 					"        .withColumn(\"PriceChangeDateTimeStampUTC\", F.to_timestamp(F.col(\"PriceChangeDateUTC\"), \"yyyy-MM-dd h:mm:ss a\")) \\\r\n",
 					"        .withColumn(\"PriceChangeDateMT\", F.from_utc_timestamp(F.col(\"PriceChangeDateTimeStampUTC\"), \"America/Edmonton\")) \\\r\n",
-					"        .withColumn(\"LastETLRun\", F.to_timestamp(F.col(\"last_modified_time\"), \"yyyy-MM-dd h:mm:ss a\"))\r\n",
+					"        .withColumn(\"LastETLRun\", F.to_timestamp(F.col(\"last_modified_time\"), \"yyyy-MM-dd h:mm:ss a\")) \\\r\n",
+					"        .withColumn(\"AddressTextHash\", sha2(F.col(\"AddressText\")))\r\n",
 					"\r\n",
 					"# sdf.select(F.col(\"source_file\"), F.col(\"ListingId\")).distinct().show()"
 				],
